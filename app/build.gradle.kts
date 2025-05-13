@@ -29,6 +29,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
 }
 
 dependencies {
@@ -40,4 +45,36 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Room
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
+    // ViewModel
+    implementation(libs.lifecycle.viewmodel)
+    // LiveData
+    implementation(libs.lifecycle.livedata)
+
+    // Retrofit
+    implementation (libs.retrofit)
+    implementation(libs.converter.gson)
+
+    // Lombok
+    compileOnly (libs.lombok)
+    annotationProcessor (libs.lombok)
+
+    // security for access token
+    implementation (libs.security.crypto)
+
+    implementation (libs.lottie)
+
+    implementation(libs.logging.interceptor)
+
+    implementation (libs.roundedimageview)
+
+    // Load Image from Internet
+    implementation (libs.glide)
+
+    // Select favorite tag
+    implementation(libs.flexbox)
+
 }

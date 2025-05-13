@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="vm"
+            type="com.example.devblogapplication.viewmodel.SetupProfileViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main"
+        tools:context=".view.activity.SetupProfileActivity">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Setup Your Profile"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:layout_marginBottom="20dp"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp">
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/profileImage"
+                    android:visibility="@{vm.uploading_image ? View.INVISIBLE : View.VISIBLE}"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    app:riv_corner_radius="20dp"
+                    android:src="@drawable/sample_avatar"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:scaleType="centerCrop"/>
+
+                <ImageButton
+                    android:id="@+id/btnPickImage"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:contentDescription="Update Avatar"
+                    android:src="@drawable/ic_edit"
+                    android:background="@drawable/button_bg"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:visibility="@{vm.uploading_image ? View.VISIBLE : View.INVISIBLE}"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/image_loading"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:text="Email"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:layout_width="315dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_bg"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="12dp"
+                android:hint="Enter your email"
+                android:text="@={vm.email}"
+                android:padding="10dp"
+                android:textSize="14sp"
+                android:inputType="textEmailAddress"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:text="Your Name"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:layout_width="315dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_bg"
+                android:drawableStart="@drawable/ic_person_outline"
+                android:drawablePadding="12dp"
+                android:hint="Enter your name"
+                android:text="@={vm.name}"
+                android:padding="10dp"
+                android:textSize="14sp"
+                android:inputType="text"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:text="Username"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:layout_width="315dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_bg"
+                android:drawableStart="@drawable/ic_at"
+                android:drawablePadding="12dp"
+                android:hint="Enter your username"
+                android:text="@={vm.username}"
+                android:padding="10dp"
+                android:textSize="14sp"
+                android:inputType="text"/>
+
+            <TextView
+                android:layout_width="315dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:text="Your email will be used to send you product and community updates"
+                android:textSize="14sp"
+                android:textStyle="italic" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp">
+
+                <CheckBox
+                    android:id="@+id/remember_me_checkbox"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="I don’t want to receive updates via email"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/remember_me_checkbox"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:visibility="@{vm.error.empty ? View.GONE : View.VISIBLE}"
+                android:layout_width="315dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/red"
+                android:text="@{vm.error}"
+                android:textSize="14sp"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:text='@{vm.loading ? "" : "SET UP"}'
+                    android:textAllCaps="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:onClick="@{() -> vm.updateProfile()}"/>
+                <ProgressBar
+                    android:layout_width="25sp"
+                    android:layout_height="25dp"
+                    android:visibility="@{vm.loading ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:indeterminateTint="@color/white"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>
