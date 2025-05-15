@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -55,6 +56,8 @@ public class SetupProfileActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(SetupProfileViewModel.class);
         binding.setVm(viewModel);
         binding.setLifecycleOwner(this);
+        viewModel.email.setValue(getIntent().getStringExtra("email"));
+        Log.d("Setup Profile", "user email: " + getIntent().getStringExtra("email"));
 
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),

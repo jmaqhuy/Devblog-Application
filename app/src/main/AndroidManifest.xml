@@ -16,6 +16,9 @@
         android:theme="@style/Theme.DevblogApplication"
         tools:targetApi="31">
         <activity
+            android:name=".view.activity.PostDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.activity.SelectFavoriteTagActivity"
             android:exported="false" />
         <activity

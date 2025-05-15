@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<data>
+    <variable
+        name="position"
+        type="int" />
+    <variable
+        name="post"
+        type="com.example.devblogapplication.model.PostDTO" />
+    <variable
+        name="listener"
+        type="com.example.devblogapplication.view.adapter.PostAdapter.OnPostActionListener" />
+    <import type="android.view.View"/>
+</data>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@drawable/border_bg"
+        android:backgroundTint="@color/blue"
+        android:paddingVertical="3dp"
+        android:layout_marginVertical="3dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_bg"
+            android:backgroundTint="@color/white"
+            android:padding="20dp"
+            android:onClick="@{() -> listener.onRead(post)}">
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:visibility="@{post.externalPost == null ? View.GONE : View.VISIBLE}"
+                android:id="@+id/sourceAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/sample_avatar"
+                app:riv_oval="true"
+                app:imageUrl="@{post.externalPost.webLogo}"
+                android:scaleType="centerCrop"
+                />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/authorAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/sourceAvatar"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/sample_avatar"
+                app:riv_oval="true"
+                app:imageUrl="@{post.author.avatar}"
+                android:scaleType="centerCrop"/>
+
+            <LinearLayout
+                android:visibility="@{post.externalPost == null ? View.GONE : View.VISIBLE}"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="@id/authorAvatar"
+                app:layout_constraintBottom_toBottomOf="@id/authorAvatar"
+                app:layout_constraintEnd_toStartOf="@id/more"
+                android:background="@drawable/border_stroke_button"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingHorizontal="10dp"
+                android:onClick="@{() -> listener.onReadExternalPost(post)}">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_external_link"
+                    android:layout_marginEnd="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Read post"/>
+                    
+            </LinearLayout>
+            <ImageButton
+                android:id="@+id/more"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@null"
+                android:src="@drawable/ic_more"/>
+
+            <TextView
+                android:id="@+id/postTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/authorAvatar"
+                android:maxLength="55"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="20sp"
+                android:layout_marginTop="10dp"
+                android:text="@{post.externalPost == null ? post.title : post.externalPost.title}" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flexbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexDirection="row"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:layout_constraintTop_toBottomOf="@id/postTitle"
+                app:alignItems="flex_start"
+                app:alignContent="flex_start"/>
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="214dp"
+                android:src="@drawable/image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/flexbox"
+                app:riv_corner_radius="15dp"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="10dp"
+                app:imageUrl="@{post.externalPost == null ? post.thumbnail : post.externalPost.thumbnail}"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="130dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/border_bg"
+                    android:backgroundTint="@color/light_grey"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/likeHolder"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/border_bg"
+                        app:backgroundTintBasedOnLiked="@{post.isLiked}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/dislike">
+                        <ImageButton
+                            android:id="@+id/like"
+                            android:layout_width="42dp"
+                            android:layout_height="match_parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:background="@null"
+                            android:src="@drawable/ic_like_selector"
+                            android:onClick="@{() -> listener.onLike(post, position)}"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/like"
+                            android:text="@{String.valueOf(post.likes)}"
+                            android:textSize="17sp"
+                            android:gravity="center"/>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <ImageButton
+                        android:id="@+id/dislike"
+                        android:layout_width="42dp"
+                        android:layout_height="match_parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@drawable/border_bg"
+                        android:src="@drawable/ic_dislike_selector"
+                        android:onClick="@{() -> listener.onDislike(post)}"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:src="@drawable/ic_comment"
+                        android:onClick="@{() -> listener.onComment(post)}"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@{String.valueOf(post.comments)}"
+                        android:textSize="17sp"
+                        android:gravity="center"
+                        android:layout_marginStart="5dp"/>
+                </LinearLayout>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:src="@drawable/ic_bookmark_selector"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:onClick="@{() -> listener.onBookmark(post)}"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+</layout>

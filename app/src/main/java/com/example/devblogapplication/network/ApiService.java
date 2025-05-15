@@ -1,6 +1,7 @@
 package com.example.devblogapplication.network;
 
 import com.example.devblogapplication.model.ApiResponse;
+import com.example.devblogapplication.model.PostDTO;
 import com.example.devblogapplication.model.Tag;
 import com.example.devblogapplication.model.UserInfoDTO;
 import com.example.devblogapplication.model.request.LoginRequest;
@@ -18,6 +19,8 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     /* Auth API */
@@ -41,4 +44,20 @@ public interface ApiService {
 
     @GET("/api/tags")
     Call<ApiResponse<List<Tag>>> getTags();
+
+    @POST("/api/users/me/favorite-tags")
+    Call<ApiResponse<List<Tag>>> updateFavoriteTags(@Body List<Tag> tags);
+
+
+
+    /* Post API */
+    @GET("/api/posts/for-you")
+    Call<ApiResponse<List<PostDTO>>> getPosts(@Query("pageNumber") int pageNumber);
+
+    @POST("/api/posts/{postId}/like")
+    Call<ApiResponse<Map<String, Boolean>>> likePost(@Path("postId") Long postId);
+
+    @GET("/api/posts/{postId}")
+    Call<ApiResponse<PostDTO>>  getPostDetail(@Path("postId") Long postId);
+
 }

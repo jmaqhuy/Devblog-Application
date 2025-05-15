@@ -2,6 +2,7 @@ package com.example.devblogapplication.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -49,6 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
                     SecurePrefsHelper.saveRememberMe(this, true);
                     if (result.data.getUserInfo().getAvatarLink() == null || result.data.getUserInfo().getAvatarLink().isEmpty()){
                         Intent intent = new Intent(this, SetupProfileActivity.class);
+                        intent.putExtra("email", result.data.getUserInfo().getEmail());
+                        Log.d("RegisterActivity", "user email: " + result.data.getUserInfo().getEmail());
                         startActivity(intent);
                         finishAffinity();
                     } else {

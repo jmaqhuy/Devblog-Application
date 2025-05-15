@@ -77,4 +77,12 @@ dependencies {
     // Select favorite tag
     implementation(libs.flexbox)
 
+
+    // markdown
+    implementation (libs.core)
+    implementation (libs.ext.strikethrough)
+    implementation (libs.ext.tables)
+    implementation (libs.image)
+    implementation (libs.linkify)
+
 }

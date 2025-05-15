@@ -34,6 +34,12 @@ public class SelectFavoriteTagViewModel extends ViewModel {
     public LiveData<Boolean> error = _error;
     public LiveData<String> errorMessage = _errorMessage;
 
+
+    public MutableLiveData<Boolean> updating = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> update_success = new MutableLiveData<>(false);
+    private MediatorLiveData<Resource> _updateResult = new MediatorLiveData<>();
+    public LiveData<Resource> updateResult = _updateResult;
+
     private final MediatorLiveData<List<Tag>> filteredTags = new MediatorLiveData<>();
     public LiveData<List<Tag>> getFilteredTags() {
         return filteredTags;
@@ -91,6 +97,30 @@ public class SelectFavoriteTagViewModel extends ViewModel {
         });
 
         filteredTags.setValue(fullTagList);
+    }
+
+    public void updateFavoriteTags(List<Tag> tags) {
+        if (updating.getValue() != null && updating.getValue()) {
+            return;
+        }
+        LiveData<Resource> source = repo.updateFavoriteTags(tags);
+        _updateResult.addSource(source, result -> {
+            _updateResult.setValue(result);
+            switch (result.status) {
+                case LOADING:
+                    updating.setValue(true);
+                    update_success.setValue(false);
+                    break;
+                case SUCCESS:
+                    updating.setValue(false);
+                    update_success.setValue(true);
+                    break;
+
+            }
+            if (result.status != Resource.Status.LOADING) {
+                _updateResult.removeSource(source);
+            }
+        });
     }
 
 

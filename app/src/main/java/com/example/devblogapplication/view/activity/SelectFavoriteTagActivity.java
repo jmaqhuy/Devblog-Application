@@ -1,5 +1,6 @@
 package com.example.devblogapplication.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -23,6 +24,8 @@ import com.google.android.flexbox.FlexboxLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import lombok.Getter;
 
 public class SelectFavoriteTagActivity extends AppCompatActivity {
 
@@ -53,6 +56,7 @@ public class SelectFavoriteTagActivity extends AppCompatActivity {
         } else {
             binding.btnSave.setEnabled(true);
         }
+        binding.btnSave.setOnClickListener(v -> viewModel.updateFavoriteTags(selectedTags));
     }
 
     private void observeViewModel() {
@@ -63,6 +67,14 @@ public class SelectFavoriteTagActivity extends AppCompatActivity {
         });
 
         viewModel.getFilteredTags().observe(this, this::displayTags);
+
+        viewModel.updateResult.observe(this, result -> {
+            if (result.status == Resource.Status.SUCCESS) {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                finishAffinity();
+            }
+        });
     }
 
     private void displayTags(List<Tag> tags) {
