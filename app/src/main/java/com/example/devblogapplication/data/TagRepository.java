@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.devblogapplication.model.ApiResponse;
 import com.example.devblogapplication.model.Resource;
-import com.example.devblogapplication.model.Tag;
+import com.example.devblogapplication.room.Tag;
 import com.example.devblogapplication.network.ApiService;
 import com.example.devblogapplication.network.NetworkClient;
 

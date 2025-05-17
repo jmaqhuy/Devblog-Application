@@ -90,25 +90,25 @@ public class AuthRepository {
         return liveData;
     }
 
-    public LiveData<Boolean> introspect() {
-        MutableLiveData<Boolean> live = new MutableLiveData<>();
-        api.introspect().enqueue(new Callback<Boolean>() {
+    public LiveData<Resource<LoginResponse>> introspect() {
+        MutableLiveData<Resource<LoginResponse>> live = new MutableLiveData<>();
+        live.postValue(Resource.loading());
+        api.introspect().enqueue(new Callback<ApiResponse<LoginResponse>>() {
             @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            public void onResponse(Call<ApiResponse<LoginResponse>> call, Response<ApiResponse<LoginResponse>> response) {
                 Log.d(TAG, "Introspect Response: " + response);
                 if (response.isSuccessful() && response.body() != null) {
-                    live.postValue(response.body());
+                    live.postValue(Resource.success(response.body().getData()));
                 } else {
-                    live.postValue(false);
+                    live.postValue(Resource.error("Something went wrong"));
                     ErrorResponse errorResponse = NetworkClient.parseError(response.errorBody());
                     Log.e("Introspect Error", errorResponse.getMessage());
                 }
             }
 
             @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                // TODO: Xử lý khi không có mạng
-                live.postValue(false);
+            public void onFailure(Call<ApiResponse<LoginResponse>> call, Throwable t) {
+                live.postValue(Resource.error("Something went wrong"));
             }
         });
 

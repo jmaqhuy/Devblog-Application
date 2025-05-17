@@ -1,5 +1,9 @@
 package com.example.devblogapplication.viewmodel;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -13,9 +17,9 @@ import com.example.devblogapplication.model.request.UpdateProfileRequest;
 
 import okhttp3.MultipartBody;
 
-public class SetupProfileViewModel extends ViewModel {
+public class SetupProfileViewModel extends AndroidViewModel {
     private final ImageRepository imageRepo = new ImageRepository();
-    private final UserRepository userRepo = new UserRepository();
+    private final UserRepository userRepo;
 
     private final MediatorLiveData<Resource<String>> _imageUploadStatus = new MediatorLiveData<>();
     public LiveData<Resource<String>> imageUploadStatus = _imageUploadStatus;
@@ -37,6 +41,11 @@ public class SetupProfileViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> _loading = new MutableLiveData<>(false);
     public LiveData<Boolean> loading = _loading;
+
+    public SetupProfileViewModel(@NonNull Application application) {
+        super(application);
+        userRepo = new UserRepository(application);
+    }
 
     public void updateProfile() {
         if (_loading.getValue()) {

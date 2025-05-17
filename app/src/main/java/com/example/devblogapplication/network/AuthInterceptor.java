@@ -22,8 +22,7 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request req = chain.request();
         if (req.url().encodedPath().equals("/api/login") ||
-                req.url().encodedPath().equals("/api/register") ||
-                req.url().encodedPath().equals("/api/tags")) {
+                req.url().encodedPath().equals("/api/register")) {
             return chain.proceed(req);
         }
         Log.d("AuthInterceptor", "Intercepting " + req.method() + " " + req.url());

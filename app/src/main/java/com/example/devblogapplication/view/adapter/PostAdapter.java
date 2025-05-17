@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.PostViewBinding;
 import com.example.devblogapplication.model.PostDTO;
-import com.example.devblogapplication.model.Tag;
 import com.example.devblogapplication.model.TagDTO;
 import com.google.android.flexbox.FlexboxLayout;
 

@@ -2,7 +2,7 @@ package com.example.devblogapplication.network;
 
 import com.example.devblogapplication.model.ApiResponse;
 import com.example.devblogapplication.model.PostDTO;
-import com.example.devblogapplication.model.Tag;
+import com.example.devblogapplication.room.Tag;
 import com.example.devblogapplication.model.UserInfoDTO;
 import com.example.devblogapplication.model.request.LoginRequest;
 import com.example.devblogapplication.model.request.UpdateProfileRequest;
@@ -25,7 +25,7 @@ import retrofit2.http.Query;
 public interface ApiService {
     /* Auth API */
     @POST("/api/introspect")
-    Call<Boolean> introspect();
+    Call<ApiResponse<LoginResponse>> introspect();
 
     @POST("/api/login")
     Call<ApiResponse<LoginResponse>> login(@Body LoginRequest request);

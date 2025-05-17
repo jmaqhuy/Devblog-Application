@@ -111,10 +111,13 @@ public class SetupProfileActivity extends AppCompatActivity {
         viewModel.updateProfileStatus.observe(this, result -> {
             switch (result.status) {
                 case SUCCESS:
-                    Toast.makeText(this, "update profile success", Toast.LENGTH_SHORT).show();
                     if (result.data.getFavoriteTags() == null || result.data.getFavoriteTags().size() < 5) {
                         Intent intent = new Intent(this, SelectFavoriteTagActivity.class);
                         startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        finishAffinity();
                     }
                     break;
                 case ERROR:

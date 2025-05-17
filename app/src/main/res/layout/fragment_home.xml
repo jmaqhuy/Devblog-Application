@@ -72,7 +72,8 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:riv_oval="true"/>
+                        app:riv_oval="true"
+                        app:imageUrl="@{vm.user.avatarLink}"/>
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="50dp"

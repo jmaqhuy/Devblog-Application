@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.devblogapplication.data.TagRepository;
 import com.example.devblogapplication.model.Resource;
-import com.example.devblogapplication.model.Tag;
+import com.example.devblogapplication.room.Tag;
 
 import java.util.ArrayList;
 import java.util.List;

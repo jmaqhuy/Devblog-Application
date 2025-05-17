@@ -48,10 +48,18 @@ public class RegisterActivity extends AppCompatActivity {
                 case SUCCESS:
                     SecurePrefsHelper.saveAccessToken(this, result.data.getToken());
                     SecurePrefsHelper.saveRememberMe(this, true);
-                    if (result.data.getUserInfo().getAvatarLink() == null || result.data.getUserInfo().getAvatarLink().isEmpty()){
+                    if (result.data.getUserInfo().getAvatarLink() == null
+                            || result.data.getUserInfo().getAvatarLink().isEmpty()
+                            || result.data.getUserInfo().getUsername().isEmpty()
+                            || result.data.getUserInfo().getFullname().isEmpty()) {
                         Intent intent = new Intent(this, SetupProfileActivity.class);
                         intent.putExtra("email", result.data.getUserInfo().getEmail());
                         Log.d("RegisterActivity", "user email: " + result.data.getUserInfo().getEmail());
+                        startActivity(intent);
+                        finishAffinity();
+                    } else if (result.data.getUserInfo().getFavoriteTags() == null
+                            || result.data.getUserInfo().getFavoriteTags().size() < 5) {
+                        Intent intent = new Intent(this, SelectFavoriteTagActivity.class);
                         startActivity(intent);
                         finishAffinity();
                     } else {

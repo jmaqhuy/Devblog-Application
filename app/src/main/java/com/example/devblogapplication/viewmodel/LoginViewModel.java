@@ -1,17 +1,26 @@
 package com.example.devblogapplication.viewmodel;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.devblogapplication.data.AuthRepository;
+import com.example.devblogapplication.data.UserRepository;
 import com.example.devblogapplication.model.response.LoginResponse;
 import com.example.devblogapplication.model.Resource;
 import com.example.devblogapplication.utils.ValidEmail;
 
-public class LoginViewModel extends ViewModel {
+public class LoginViewModel extends AndroidViewModel {
     private final AuthRepository repo = new AuthRepository();
+    private final UserRepository userRepo;
+    public LoginViewModel(Application application) {
+        super(application);
+        userRepo = new UserRepository(application);
+    }
 
     public final MutableLiveData<String> email = new MutableLiveData<>(),
             password = new MutableLiveData<>();
@@ -57,6 +66,7 @@ public class LoginViewModel extends ViewModel {
                     break;
                 case SUCCESS:
                     _loading.setValue(false);
+                    userRepo.insertUser(result.data.getUserInfo());
                     break;
                 case ERROR:
                     _loading.setValue(false);

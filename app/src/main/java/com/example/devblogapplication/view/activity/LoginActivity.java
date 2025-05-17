@@ -2,6 +2,7 @@ package com.example.devblogapplication.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -46,8 +47,16 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         SecurePrefsHelper.saveRememberMe(this, false);
                     }
-                    if (result.data.getUserInfo().getAvatarLink() == null || result.data.getUserInfo().getAvatarLink().isEmpty()){
+                    if (result.data.getUserInfo().getAvatarLink() == null
+                            || result.data.getUserInfo().getAvatarLink().isEmpty()
+                            || result.data.getUserInfo().getUsername().isEmpty()
+                            || result.data.getUserInfo().getFullname().isEmpty()) {
                         Intent intent = new Intent(this, SetupProfileActivity.class);
+                        startActivity(intent);
+                        finishAffinity();
+                    } else if (result.data.getUserInfo().getFavoriteTags() == null
+                            || result.data.getUserInfo().getFavoriteTags().size() < 5) {
+                        Intent intent = new Intent(this, SelectFavoriteTagActivity.class);
                         startActivity(intent);
                         finishAffinity();
                     } else {
@@ -55,7 +64,6 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
 
-                    // TODO: điều hướng sang MainActivity…
                     break;
                 default:
                     break;

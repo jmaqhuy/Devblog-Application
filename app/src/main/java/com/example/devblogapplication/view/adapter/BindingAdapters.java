@@ -47,6 +47,7 @@ public class BindingAdapters {
     public static void loadImage(RoundedImageView riv, String url) {
         if (url != null && !url.isEmpty()) {
             if (!url.startsWith("http")) {
+//                url = "http://10.0.2.2:8080/images/" + url;
                 url = "https://jmaqhuy.id.vn/images/" + url;
             }
             Glide.with(riv.getContext())

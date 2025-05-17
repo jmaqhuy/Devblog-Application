@@ -17,15 +17,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.ActivitySelectFavoriteTagBinding;
 import com.example.devblogapplication.model.Resource;
-import com.example.devblogapplication.model.Tag;
+import com.example.devblogapplication.room.Tag;
 import com.example.devblogapplication.viewmodel.SelectFavoriteTagViewModel;
 import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import lombok.Getter;
 
 public class SelectFavoriteTagActivity extends AppCompatActivity {
 
