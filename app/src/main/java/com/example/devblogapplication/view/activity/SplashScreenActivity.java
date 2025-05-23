@@ -22,7 +22,7 @@ import com.example.devblogapplication.viewmodel.SplashViewModel;
 @SuppressLint("CustomSplashScreen")
 public class SplashScreenActivity extends AppCompatActivity {
     private SplashViewModel vm;
-    private final long MIN_DELAY = 3000;
+    private final long MIN_DELAY = 1900;
     private long startTime;
     private static final String TAG = "SplashScreenActivity";
 

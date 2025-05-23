@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.devblogapplication.R;
+import com.example.devblogapplication.model.PostCommentDTO;
 import com.example.devblogapplication.model.PostDTO;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -85,6 +86,19 @@ public class BindingAdapters {
         }
         adapter.updateData(list);
     }
+    @BindingAdapter({"comments", "listener"})
+    public static void bindComments(RecyclerView rv,
+                                 List<PostCommentDTO> list,
+                                 CommentAdapter.OnCommentActionListener listener) {
+        CommentAdapter adapter = (CommentAdapter) rv.getAdapter();
+        if (adapter == null) {
+            adapter = new CommentAdapter(new ArrayList<>(), listener);
+            rv.setLayoutManager(new LinearLayoutManager(rv.getContext()));
+            rv.setAdapter(adapter);
+        }
+        adapter.updateData(list);
+    }
+
     @BindingAdapter("app:backgroundTintBasedOnLiked")
     public static void setBackgroundTintBasedOnLiked(View view, boolean isLiked) {
         Context context = view.getContext();

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout >
+    <data>
+        <variable
+            name="vm"
+            type="com.example.devblogapplication.viewmodel.PostListViewModel" />
+
+        <variable
+            name="listener"
+            type="com.example.devblogapplication.view.adapter.PostAdapter.OnPostActionListener" />
+
+        <import type="android.view.View"/>
+    </data>
+    <androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".view.fragment.PostListFragment"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/postView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{vm.isLoading ? View.GONE : View.VISIBLE}"
+                app:items="@{vm.posts}"
+                app:listener="@{listener}"/>
+
+            <!-- Loading -->
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="@{vm.isLoading ? View.VISIBLE : View.GONE}"
+                app:lottie_rawRes="@raw/post_loading"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"/>
+
+            <!-- Error Message -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Something went wrong"
+                android:visibility="@{vm.isError ? View.VISIBLE : View.GONE}"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

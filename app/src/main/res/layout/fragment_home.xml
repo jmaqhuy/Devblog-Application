@@ -7,9 +7,6 @@
         <variable
             name="vm"
             type="com.example.devblogapplication.viewmodel.HomeViewModel" />
-        <variable
-            name="listener"
-            type="com.example.devblogapplication.view.adapter.PostAdapter.OnPostActionListener" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -73,8 +70,10 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:riv_oval="true"
-                        app:imageUrl="@{vm.user.avatarLink}"/>
+                        app:imageUrl="@{vm.user.avatarLink}"
+                        android:scaleType="centerCrop"/>
                     <Button
+                        android:id="@+id/createPost"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -87,77 +86,27 @@
                         style="@style/MyBorderButton"
                         android:textColor="@color/grey"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/mid_layout"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="5dp">
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        style="@style/MyBorderButton"
-                        android:text="For You"
-                        android:textFontWeight="500"
-                        android:textSize="12sp"
-                        android:padding="0dp"
-                        android:backgroundTint="@color/light_blue"
-                        android:layout_marginEnd="10dp"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:text="Following"
-                        android:textColor="@color/black"
-                        android:textFontWeight="500"
-                        android:textSize="12sp"
-                        android:padding="0dp"
-                        android:backgroundTint="@color/white"/>
-                </LinearLayout>
+                    app:tabMode="scrollable"
+                    app:tabGravity="start"
+                    android:background="@color/white"
+                    app:tabRippleColor="@null"/>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/postView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{vm.isLoading ? View.GONE : View.VISIBLE}"
-                    app:items="@{vm.posts}"
-                    app:listener="@{listener}"/>
-
-                <!-- Loading -->
-                <com.airbnb.lottie.LottieAnimationView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="@{vm.isLoading ? View.VISIBLE : View.GONE}"
-                    app:lottie_rawRes="@raw/post_loading"
-                    app:lottie_loop="true"
-                    app:lottie_autoPlay="true"/>
-
-                <!-- Error Message -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Something went wrong"
-                    android:visibility="@{vm.isError ? View.VISIBLE : View.GONE}"/>
-
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

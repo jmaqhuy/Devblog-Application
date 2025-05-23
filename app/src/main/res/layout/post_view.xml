@@ -172,8 +172,7 @@
                         android:layout_height="match_parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:background="@drawable/border_bg"
-                        android:src="@drawable/ic_dislike_selector"
-                        android:onClick="@{() -> listener.onDislike(post)}"/>
+                        android:src="@drawable/ic_dislike_selector"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

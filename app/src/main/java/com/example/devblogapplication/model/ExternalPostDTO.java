@@ -1,5 +1,7 @@
 package com.example.devblogapplication.model;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExternalPostDTO {
+public class ExternalPostDTO implements Serializable {
     private String domain;
     private String path;
 

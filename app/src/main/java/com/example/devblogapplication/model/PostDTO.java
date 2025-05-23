@@ -1,5 +1,6 @@
 package com.example.devblogapplication.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDTO {
+public class PostDTO implements Serializable {
     private Long id;
     private UserDTO author;
     private String title;

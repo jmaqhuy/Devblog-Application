@@ -108,8 +108,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public interface OnPostActionListener {
         void onLike(PostDTO post, int position);
 
-        void onDislike(PostDTO post);
-
         void onComment(PostDTO post);
 
         void onBookmark(PostDTO post);

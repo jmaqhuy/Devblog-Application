@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="vm"
+            type="com.example.devblogapplication.viewmodel.CommentWriterViewModel" />
+
+        <variable
+            name="postId"
+            type="Long" />
+        <import type="android.view.View"/>
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".view.fragment.CommentWriterFragment"
+        android:padding="10dp"
+        android:background="@color/white">
+
+        <FrameLayout
+            android:id="@+id/cancelButton"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/border_bg"
+            android:backgroundTint="@color/transparent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/pushComment"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/border_bg"
+            android:backgroundTint="@color/blue"
+            android:onClick="@{() -> vm.pushComment(postId)}">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comment"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+        </FrameLayout>
+
+        <View
+            android:id="@+id/decor"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@id/pushComment"
+            android:background="@color/black"
+            android:layout_marginHorizontal="3dp"/>
+
+        <FrameLayout
+            android:id="@+id/write"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toBottomOf="@id/decor"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/border_bg"
+            android:backgroundTint="@{vm.isPreviewing ? @color/transparent : @color/blue}"
+            android:layout_marginTop="10dp"
+            android:onClick="@{ () -> vm.setPreviewComment(false)}">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Write"
+                android:layout_gravity="center"
+                android:textColor="@{vm.isPreviewing ? @color/black : @color/white}"
+                android:textStyle="bold"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/preview"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toBottomOf="@id/decor"
+            app:layout_constraintStart_toEndOf="@id/write"
+            android:background="@drawable/border_bg"
+            android:backgroundTint="@{vm.isPreviewing ? @color/blue : @color/transparent}"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:onClick="@{ () -> vm.setPreviewComment(true)}">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preview"
+                android:layout_gravity="center"
+                android:textColor="@{vm.isPreviewing ? @color/white : @color/black}"
+                android:textStyle="bold"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/preview"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/light_grey">
+            <EditText
+                android:visibility="@{vm.isPreviewing ? View.GONE : View.VISIBLE}"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start"
+                android:hint="Very helpful"
+                android:text="@={vm.content}"
+                android:background="@drawable/border_bottom_bg"/>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{vm.isPreviewing ? View.VISIBLE : View.GONE}">
+                <TextView
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:background="@drawable/border_bottom_bg"
+                    android:backgroundTint="@color/white"
+                    app:markdown="@{vm.content}"/>
+            </ScrollView>
+
+
+        </FrameLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
