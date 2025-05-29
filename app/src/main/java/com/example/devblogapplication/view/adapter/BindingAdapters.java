@@ -1,6 +1,7 @@
 package com.example.devblogapplication.view.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,14 +15,20 @@ import com.bumptech.glide.Glide;
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.model.PostCommentDTO;
 import com.example.devblogapplication.model.PostDTO;
+import com.example.devblogapplication.model.Tag;
+import com.example.devblogapplication.model.TagWithScore;
+import com.example.devblogapplication.viewmodel.TopTagViewModel;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.noties.markwon.Markwon;
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
 import io.noties.markwon.ext.tables.TablePlugin;
+import io.noties.markwon.html.HtmlPlugin;
 import io.noties.markwon.image.ImagesPlugin;
 import io.noties.markwon.linkify.LinkifyPlugin;
 
@@ -39,6 +46,7 @@ public class BindingAdapters {
                 .usePlugin(TablePlugin.create(textView.getContext()))
                 .usePlugin(StrikethroughPlugin.create())
                 .usePlugin(LinkifyPlugin.create())
+                .usePlugin(HtmlPlugin.create())
                 .build();
 
         markwon.setMarkdown(textView, markdown);
@@ -59,6 +67,7 @@ public class BindingAdapters {
             riv.setImageResource(R.drawable.image);
         }
     }
+
     @BindingAdapter("imageUrl")
     public static void loadImage(ImageView imageView, String url) {
         if (url != null && !url.isEmpty()) {
@@ -86,10 +95,53 @@ public class BindingAdapters {
         }
         adapter.updateData(list);
     }
+
+    @BindingAdapter({"tags", "listener"})
+    public static void bindTopTags(RecyclerView rv,
+                                   List<TagWithScore> listTag,
+                                   RankTagAdapter.OnTagActionListener listener) {
+        RankTagAdapter adapter = (RankTagAdapter) rv.getAdapter();
+        if (adapter == null) {
+            adapter = new RankTagAdapter(new ArrayList<>(), listener);
+            rv.setLayoutManager(new LinearLayoutManager(rv.getContext()));
+            rv.setAdapter(adapter);
+        }
+        adapter.updateData(listTag);
+    }
+
+    @BindingAdapter({"allTag", "listener"})
+    public static void bindAlphabetAllTags(RecyclerView rv,
+                                           List<Tag> allTag,
+                                           RankTagAdapter.OnTagActionListener listener) {
+        Log.d("BindingAdapters", "Bind Alphabet with recycler view for that character");
+        TagAlphabetAdapter adapter = (TagAlphabetAdapter) rv.getAdapter();
+        if (adapter == null) {
+            adapter = new TagAlphabetAdapter(new ArrayList<>(), listener);
+            rv.setLayoutManager(new LinearLayoutManager(rv.getContext()));
+            rv.setAdapter(adapter);
+        }
+        adapter.updateData(allTag);
+    }
+
+    @BindingAdapter({"filteredTag", "listener"})
+    public static void bindAllTags(RecyclerView rv,
+                                   List<Tag> filteredTag,
+                                   RankTagAdapter.OnTagActionListener listener) {
+        AllTagAdapter adapter = (AllTagAdapter) rv.getAdapter();
+        if (adapter == null) {
+            adapter = new AllTagAdapter(new ArrayList<>(), listener);
+            rv.setLayoutManager(new LinearLayoutManager(rv.getContext()));
+            rv.setAdapter(adapter);
+        }
+
+        adapter.updateData(filteredTag);
+    }
+
+
     @BindingAdapter({"comments", "listener"})
     public static void bindComments(RecyclerView rv,
-                                 List<PostCommentDTO> list,
-                                 CommentAdapter.OnCommentActionListener listener) {
+                                    List<PostCommentDTO> list,
+                                    CommentAdapter.OnCommentActionListener listener) {
         CommentAdapter adapter = (CommentAdapter) rv.getAdapter();
         if (adapter == null) {
             adapter = new CommentAdapter(new ArrayList<>(), listener);
@@ -99,12 +151,21 @@ public class BindingAdapters {
         adapter.updateData(list);
     }
 
-    @BindingAdapter("app:backgroundTintBasedOnLiked")
+    @BindingAdapter("backgroundTintBasedOnLiked")
     public static void setBackgroundTintBasedOnLiked(View view, boolean isLiked) {
         Context context = view.getContext();
         int tintColor = isLiked ?
                 ContextCompat.getColor(context, R.color.light_blue) :
                 ContextCompat.getColor(context, R.color.light_grey);
+        view.setBackgroundTintList(android.content.res.ColorStateList.valueOf(tintColor));
+    }
+
+    @BindingAdapter("backgroundTintBasedOnBookmarked")
+    public static void setBackgroundTintBasedOnBookmarked(View view, boolean isBookmarked) {
+        Context context = view.getContext();
+        int tintColor = isBookmarked ?
+                ContextCompat.getColor(context, R.color.light_yellow) :
+                ContextCompat.getColor(context, R.color.white);
         view.setBackgroundTintList(android.content.res.ColorStateList.valueOf(tintColor));
     }
 }

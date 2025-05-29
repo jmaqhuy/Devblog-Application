@@ -66,11 +66,30 @@
             android:id="@+id/tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:text="Tags"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleEditText" />
+
+        <HorizontalScrollView
+            android:id="@+id/tagScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fillViewport="false"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@id/tag">
+
+            <LinearLayout
+                android:id="@+id/tagContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:visibility="@{vm.selectedTags.size() > 0 ? View.VISIBLE : View.GONE}" />
+        </HorizontalScrollView>
+
 
         <EditText
             android:id="@+id/tagEditText"
@@ -85,28 +104,10 @@
             android:paddingVertical="3dp"
             android:text="@={vm.searchBox}"
             android:textSize="15sp"
-            app:layout_constraintTop_toBottomOf="@id/tag"
+            app:layout_constraintTop_toBottomOf="@id/tagScrollView"
             android:singleLine="true"
             android:maxLines="1"
             android:inputType="text"/>
-
-        <HorizontalScrollView
-            android:id="@+id/tagScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:fillViewport="false"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            app:layout_constraintTop_toBottomOf="@id/tagEditText">
-
-            <LinearLayout
-                android:id="@+id/tagContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:visibility="@{vm.selectedTags.size() > 0 ? View.VISIBLE : View.GONE}" />
-        </HorizontalScrollView>
 
 
         <TextView
@@ -117,7 +118,7 @@
             android:text="Content"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tagScrollView" />
+            app:layout_constraintTop_toBottomOf="@id/tagEditText" />
 
         <TextView
             android:id="@+id/preview"
@@ -132,7 +133,7 @@
             android:textStyle="bold"
             android:textColor="@{vm.previewing ? @color/white : @color/black}"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tagScrollView"
+            app:layout_constraintTop_toBottomOf="@id/tagEditText"
             android:onClick="@{() -> vm.setPreviewing()}"/>
 
         <FrameLayout
@@ -205,10 +206,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                app:alignItems="center"
+                app:alignItems="flex_start"
                 app:flexDirection="row"
                 app:flexWrap="wrap"
-                app:justifyContent="center" />
+                app:justifyContent="flex_start" />
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

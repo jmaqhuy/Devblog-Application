@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@Database(entities = {User.class, Tag.class, UserTagCrossRef.class}, version = 1)
+@Database(entities = {User.class, TagInRoom.class, UserTagCrossRef.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class DevblogDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "devblog_database";

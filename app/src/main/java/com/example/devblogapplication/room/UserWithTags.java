@@ -23,7 +23,7 @@ public class UserWithTags {
                     parentColumn = "userId",
                     entityColumn = "tagId")
     )
-    private List<Tag> favoriteTags;
+    private List<TagInRoom> favoriteTags;
 
     public User getUser() {
         return user;
@@ -33,11 +33,11 @@ public class UserWithTags {
         this.user = user;
     }
 
-    public List<Tag> getFavoriteTags() {
+    public List<TagInRoom> getFavoriteTags() {
         return favoriteTags;
     }
 
-    public void setFavoriteTags(List<Tag> favoriteTags) {
+    public void setFavoriteTags(List<TagInRoom> favoriteTags) {
         this.favoriteTags = favoriteTags;
     }
 }

@@ -1,19 +1,22 @@
 package com.example.devblogapplication.viewmodel;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.devblogapplication.data.TagRepository;
 import com.example.devblogapplication.model.Resource;
-import com.example.devblogapplication.room.Tag;
+import com.example.devblogapplication.model.Tag;
+import com.example.devblogapplication.room.TagInRoom;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectFavoriteTagViewModel extends ViewModel {
-    private final TagRepository repo = new TagRepository();
+public class SelectFavoriteTagViewModel extends AndroidViewModel {
+    private final TagRepository repo;
 
     public MutableLiveData<String> searchBox = new MutableLiveData<>();
 
@@ -43,6 +46,11 @@ public class SelectFavoriteTagViewModel extends ViewModel {
     private final MediatorLiveData<List<Tag>> filteredTags = new MediatorLiveData<>();
     public LiveData<List<Tag>> getFilteredTags() {
         return filteredTags;
+    }
+
+    public SelectFavoriteTagViewModel(Application application) {
+        super(application);
+        repo = new TagRepository(application);
     }
 
     public void getAllTags() {
@@ -99,11 +107,11 @@ public class SelectFavoriteTagViewModel extends ViewModel {
         filteredTags.setValue(fullTagList);
     }
 
-    public void updateFavoriteTags(List<Tag> tags) {
+    public void updateFavoriteTags(List<Tag> tag) {
         if (updating.getValue() != null && updating.getValue()) {
             return;
         }
-        LiveData<Resource> source = repo.updateFavoriteTags(tags);
+        LiveData<Resource> source = repo.updateFavoriteTags(tag);
         _updateResult.addSource(source, result -> {
             _updateResult.setValue(result);
             switch (result.status) {

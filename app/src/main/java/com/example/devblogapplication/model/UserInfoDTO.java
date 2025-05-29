@@ -1,7 +1,5 @@
 package com.example.devblogapplication.model;
 
-import com.example.devblogapplication.room.Tag;
-
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -25,4 +23,5 @@ public class UserInfoDTO {
     private Set<Tag> favoriteTags;
     private int followers;
     private int following;
+    private int posts;
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="tag"
+            type="com.example.devblogapplication.model.Tag" />
+        <variable
+            name="listener"
+            type="com.example.devblogapplication.view.adapter.RankTagAdapter.OnTagActionListener" />
+    </data>
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/tagName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/favorite_tag_item"
+        android:text="@{@string/tag_format(tag.name)}"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:textColor="@drawable/tab_text_selector"
+        android:layout_margin="4dp"
+        android:onClick="@{() -> listener.onTagClick(tag.id)}"/>
+</layout>

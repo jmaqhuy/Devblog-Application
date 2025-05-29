@@ -20,17 +20,17 @@ public interface UserDAO {
     UserWithTags getUserWithTags();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertTags(List<Tag> tags);
+    void insertTags(List<TagInRoom> tagInRooms);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertUserTagCrossRefs(List<UserTagCrossRef> refs);
 
     @Transaction
-    default void updateFavoriteTags(String userId, List<Tag> tags) {
-        insertTags(tags); // ignore nếu trùng
+    default void updateFavoriteTags(String userId, List<TagInRoom> tagInRooms) {
+        insertTags(tagInRooms); // ignore nếu trùng
         List<UserTagCrossRef> refs = new ArrayList<>();
-        for (Tag tag : tags) {
-            refs.add(new UserTagCrossRef(userId, tag.getId()));
+        for (TagInRoom tagInRoom : tagInRooms) {
+            refs.add(new UserTagCrossRef(userId, tagInRoom.getId()));
         }
         insertUserTagCrossRefs(refs);
     }

@@ -2,7 +2,6 @@ package com.example.devblogapplication.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -40,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         viewModel.loginResult.observe(this, result -> {
             switch (result.status) {
                 case SUCCESS:
+                    Intent intent;
                     SecurePrefsHelper.saveAccessToken(this, result.data.getToken());
                     Toast.makeText(this, "Token save" + result.data.getToken(), Toast.LENGTH_SHORT).show();
                     if (binding.rememberMeCheckbox.isChecked()){
@@ -51,19 +51,16 @@ public class LoginActivity extends AppCompatActivity {
                             || result.data.getUserInfo().getAvatarLink().isEmpty()
                             || result.data.getUserInfo().getUsername().isEmpty()
                             || result.data.getUserInfo().getFullname().isEmpty()) {
-                        Intent intent = new Intent(this, SetupProfileActivity.class);
-                        startActivity(intent);
-                        finishAffinity();
+                        intent = new Intent(this, SetupProfileActivity.class);
                     } else if (result.data.getUserInfo().getFavoriteTags() == null
                             || result.data.getUserInfo().getFavoriteTags().size() < 5) {
-                        Intent intent = new Intent(this, SelectFavoriteTagActivity.class);
-                        startActivity(intent);
-                        finishAffinity();
-                    } else {
-                        Intent intent = new Intent(this, MainActivity.class);
-                        startActivity(intent);
-                    }
+                        intent = new Intent(this, SelectFavoriteTagActivity.class);
 
+                    } else {
+                        intent = new Intent(this, MainActivity.class);
+                    }
+                    startActivity(intent);
+                    finishAffinity();
                     break;
                 default:
                     break;

@@ -11,4 +11,5 @@
     <color name="red">#DC143C</color>
     <color name="code_background">#F5F5F5</color>
     <color name="code_text">#D81B60</color>
+    <color name="light_yellow">#FFFFDB</color>
 </resources>

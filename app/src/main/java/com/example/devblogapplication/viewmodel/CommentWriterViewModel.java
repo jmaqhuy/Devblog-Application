@@ -18,12 +18,13 @@ import java.util.Map;
 public class CommentWriterViewModel extends AndroidViewModel {
     public MutableLiveData<String> content = new MutableLiveData<>();
     public MutableLiveData<Boolean> isPreviewing = new MutableLiveData<>(false);
-    public PostRepository repository = new PostRepository();
+    public PostRepository repository;
     public MediatorLiveData<Resource<PostCommentDTO>> _pushCommentResult = new MediatorLiveData<>();
     public LiveData<Resource<PostCommentDTO>> pushCommentResult = _pushCommentResult;
 
     public CommentWriterViewModel(@NonNull Application application) {
         super(application);
+        repository = new PostRepository(application);
     }
 
     public void setPreviewComment(boolean preview){

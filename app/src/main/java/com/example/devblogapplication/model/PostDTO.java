@@ -19,10 +19,11 @@ public class PostDTO implements Serializable {
     private String thumbnail;
     private String content;
     private ExternalPostDTO externalPost;
-    private Set<TagDTO> tags;
+    private Set<Tag> tags;
     private LocalDateTime publicationDate;
     private boolean isLiked;
     private Integer likes;
     private Integer comments;
-    private boolean isDisliked = false;
+    private boolean isBookmarked;
+    private double score;
 }

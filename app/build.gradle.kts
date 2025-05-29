@@ -84,5 +84,6 @@ dependencies {
     implementation (libs.ext.tables)
     implementation (libs.image)
     implementation (libs.linkify)
+    implementation (libs.html)
 
 }

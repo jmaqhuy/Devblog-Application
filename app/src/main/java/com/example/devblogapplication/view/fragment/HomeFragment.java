@@ -20,6 +20,7 @@ import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.FragmentHomeBinding;
 import com.example.devblogapplication.model.PostDTO;
 import com.example.devblogapplication.view.activity.CreatePostActivity;
+import com.example.devblogapplication.view.activity.MainActivity;
 import com.example.devblogapplication.view.adapter.CustomFragmentStateAdapter;
 import com.example.devblogapplication.viewmodel.HomeViewModel;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -67,6 +68,7 @@ public class HomeFragment extends Fragment {
                     .from(this.getContext()).inflate(R.layout.tab_title, null);
             binding.tabLayout.getTabAt(i).setCustomView(textView);
         }
+        binding.userAvatar.setOnClickListener(v -> showProfileFragment());
 
         return binding.getRoot();
     }
@@ -95,5 +97,9 @@ public class HomeFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         binding = null;
+    }
+
+    public void showProfileFragment(){
+        ((MainActivity) requireActivity()).showProfileFragment();
     }
 }

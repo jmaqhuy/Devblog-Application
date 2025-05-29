@@ -1,15 +1,9 @@
 package com.example.devblogapplication.view.activity;
 
-import android.graphics.drawable.AnimatedVectorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -50,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(new HomeFragment());
         fragments.add(new ExploreFragment());
         fragments.add(new NotificationFragment());
-        fragments.add(new ProfileFragment());
+        fragments.add(ProfileFragment.newInstance(null));
 
         previousNavItemId = R.id.home;
 
@@ -98,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
+    }
+
+    public void showProfileFragment() {
+        binding.viewPager.setCurrentItem(3);
     }
 
 

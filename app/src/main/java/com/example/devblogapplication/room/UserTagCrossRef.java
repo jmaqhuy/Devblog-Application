@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
                         parentColumns = "id",
                         childColumns = "userId",
                         onDelete = ForeignKey.CASCADE),
-                @ForeignKey(entity = Tag.class,
+                @ForeignKey(entity = TagInRoom.class,
                         parentColumns = "id",
                         childColumns = "tagId",
                         onDelete = ForeignKey.CASCADE)

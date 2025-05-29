@@ -10,7 +10,7 @@ import lombok.NonNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Tag {
+public class TagInRoom {
     @PrimaryKey
     @NonNull
     private Integer id;
@@ -21,8 +21,8 @@ public class Tag {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tag tag = (Tag) o;
-        return id.equals(tag.id);
+        TagInRoom tagInRoom = (TagInRoom) o;
+        return id.equals(tagInRoom.id);
     }
 
     @Override

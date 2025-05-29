@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="vm"
+            type="com.example.devblogapplication.viewmodel.ViewAndEditMarkdownViewModel" />
+        <import type="android.view.View"/>
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".view.fragment.ViewAndEditMarkdownFragment"
+        android:padding="10dp"
+        android:background="@color/white">
+
+
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Content"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_bg"
+            android:backgroundTint="@{vm.previewing ? @color/blue : @color/light_grey}"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:text="Preview"
+            android:textStyle="bold"
+            android:textColor="@{vm.previewing ? @color/white : @color/black}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{() -> vm.setPreviewing()}"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/border_bg"
+            android:backgroundTint="@color/light_grey"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/content"
+            android:visibility="@{vm.previewing ? View.INVISIBLE : View.VISIBLE}">
+
+            <EditText
+                android:id="@+id/contentEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="35dp"
+                android:background="@drawable/border_bg"
+                android:backgroundTint="@color/light_grey"
+                android:gravity="start"
+                android:hint="Support markdown fomat"
+                android:text="@={vm.content}"
+                android:textSize="15sp" />
+
+            <ImageButton
+                android:id="@+id/addImageToContent"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom|start"
+                android:src="@drawable/ic_camera" />
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/border_bg"
+            android:backgroundTint="@color/light_grey"
+            android:padding="10dp"
+            android:visibility="@{vm.previewing ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/content"
+            app:markdown="@{vm.content}"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

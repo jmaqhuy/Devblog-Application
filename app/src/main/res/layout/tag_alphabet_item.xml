@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="character"
+            type="Character" />
+        <variable
+            name="tags"
+            type="java.util.List&lt;com.example.devblogapplication.model.Tag&gt;" />
+        <variable
+            name="listener"
+            type="com.example.devblogapplication.view.adapter.RankTagAdapter.OnTagActionListener" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/alphabet"
+            android:textSize="20sp"
+            android:text="@{String.valueOf(character)}"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:background="@drawable/border_bg"
+            android:backgroundTint="@color/light_grey"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_view"
+            app:layout_constraintTop_toBottomOf="@id/alphabet"
+            app:layout_constraintStart_toStartOf="parent"
+            app:filteredTag="@{tags}"
+            app:listener="@{listener}" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

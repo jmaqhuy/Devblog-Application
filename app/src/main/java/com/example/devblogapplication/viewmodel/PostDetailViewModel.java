@@ -1,5 +1,9 @@
 package com.example.devblogapplication.viewmodel;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,14 +18,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PostDetailViewModel extends ViewModel {
-    private PostRepository repo = new PostRepository();
+public class PostDetailViewModel extends AndroidViewModel {
+    private PostRepository repo;
     private MediatorLiveData<Resource<PostDTO>> _post = new MediatorLiveData<>();
 
     private MediatorLiveData<List<PostCommentDTO>> _comments = new MediatorLiveData<>();
     public LiveData<List<PostCommentDTO>> comments = _comments;
 
     public LiveData<Resource<PostDTO>> post = _post;
+
+    public PostDetailViewModel(@NonNull Application application) {
+        super(application);
+        repo = new PostRepository(application);
+    }
 
 
     public void get(Long postId){
@@ -50,4 +59,5 @@ public class PostDetailViewModel extends ViewModel {
             _post.setValue(Resource.success(postDTO));
         }
     }
+
 }

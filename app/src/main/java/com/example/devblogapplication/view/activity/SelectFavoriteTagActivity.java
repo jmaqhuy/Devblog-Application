@@ -2,6 +2,7 @@ package com.example.devblogapplication.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -16,8 +17,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.ActivitySelectFavoriteTagBinding;
+import com.example.devblogapplication.databinding.TagItemBinding;
 import com.example.devblogapplication.model.Resource;
-import com.example.devblogapplication.room.Tag;
+import com.example.devblogapplication.model.Tag;
+import com.example.devblogapplication.room.TagInRoom;
+import com.example.devblogapplication.view.adapter.RankTagAdapter;
 import com.example.devblogapplication.viewmodel.SelectFavoriteTagViewModel;
 import com.google.android.flexbox.FlexboxLayout;
 
@@ -29,7 +33,7 @@ public class SelectFavoriteTagActivity extends AppCompatActivity {
 
     private SelectFavoriteTagViewModel viewModel;
     private ActivitySelectFavoriteTagBinding binding;
-    private final List<Tag> selectedTags = new ArrayList<>();
+    private final List<Tag> selectedTag = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +53,12 @@ public class SelectFavoriteTagActivity extends AppCompatActivity {
 
         observeViewModel();
         viewModel.getAllTags();
-        if (selectedTags.size() < 5) {
+        if (selectedTag.size() < 5) {
             binding.btnSave.setEnabled(false);
         } else {
             binding.btnSave.setEnabled(true);
         }
-        binding.btnSave.setOnClickListener(v -> viewModel.updateFavoriteTags(selectedTags));
+        binding.btnSave.setOnClickListener(v -> viewModel.updateFavoriteTags(selectedTag));
     }
 
     private void observeViewModel() {
@@ -78,66 +82,46 @@ public class SelectFavoriteTagActivity extends AppCompatActivity {
     private void displayTags(List<Tag> tags) {
         binding.flexbox.removeAllViews();
         if (tags == null) return;
-        // trộn tag
         Collections.shuffle(tags);
 
-        List<Tag> displayTags = tags.size() > 20 ? tags.subList(0, 20) : tags;
+        List<Tag> displayTag = tags.size() > 20 ? tags.subList(0, 20) : tags;
 
-        for (Tag tag : displayTags) {
-            boolean isSelected = selectedTags.contains(tag);
+        for (Tag tag : displayTag) {
+            boolean isSelected = selectedTag.contains(tag);
             TextView tagView = createTagTextView(tag, isSelected);
             binding.flexbox.addView(tagView);
         }
     }
 
     private TextView createTagTextView(Tag tag, boolean isSelected) {
-        TextView tagView = new TextView(this);
-        String formatted = getString(R.string.tag_format, tag.getName());
-        tagView.setText(formatted);
-        tagView.setTextSize(16);
-        tagView.setPadding(10, 10, 10, 10);
-        tagView.setBackgroundResource(R.drawable.favorite_tag_item);
-        tagView.setLayoutParams(createTagLayoutParams());
-
-        updateTagSelectionState(tagView, isSelected);
-
-        tagView.setOnClickListener(v -> {
-            boolean currentlySelected = tagView.isSelected();
-            if (currentlySelected) {
-                selectedTags.remove(tag);
-            } else {
-                selectedTags.add(tag);
+        TagItemBinding tagItemBinding = DataBindingUtil.inflate(
+                LayoutInflater.from(this),
+                R.layout.tag_item,
+                this.binding.flexbox,
+                false
+        );
+        tagItemBinding.setTag(tag);
+        updateTagSelectionState(tagItemBinding.tagName, isSelected);
+        tagItemBinding.setListener(new RankTagAdapter.OnTagActionListener() {
+            @Override
+            public void onTagClick(int id) {
+                boolean currentlySelected = tagItemBinding.tagName.isSelected();
+                if (currentlySelected) {
+                    selectedTag.remove(tag);
+                } else {
+                    selectedTag.add(tag);
+                }
+                updateTagSelectionState(tagItemBinding.tagName, !currentlySelected);
             }
-            updateTagSelectionState(tagView, !currentlySelected);
         });
 
-        return tagView;
+        tagItemBinding.executePendingBindings();
+        return tagItemBinding.tagName;
     }
 
     private void updateTagSelectionState(TextView tagView, boolean isSelected) {
         tagView.setSelected(isSelected);
-        int textColor = isSelected ? R.color.white : R.color.black;
-        tagView.setTextColor(ContextCompat.getColor(this, textColor));
-        binding.btnSave.setText("Save (" + selectedTags.size() + "/5)");
-        if (selectedTags.size() < 5) {
-            binding.btnSave.setEnabled(false);
-        } else {
-            binding.btnSave.setEnabled(true);
-        }
-    }
-
-    private ViewGroup.LayoutParams createTagLayoutParams() {
-        int margin = dpToPx(4);
-        FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(margin, margin, margin, margin);
-        return params;
-    }
-
-    private int dpToPx(int dp) {
-        float density = getResources().getDisplayMetrics().density;
-        return Math.round(dp * density);
+        binding.btnSave.setText("Save (" + selectedTag.size() + "/5)");
+        binding.btnSave.setEnabled(selectedTag.size() >= 5);
     }
 }

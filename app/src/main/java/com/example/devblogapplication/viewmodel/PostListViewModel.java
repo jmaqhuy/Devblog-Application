@@ -1,5 +1,9 @@
 package com.example.devblogapplication.viewmodel;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -12,25 +16,48 @@ import com.example.devblogapplication.model.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostListViewModel extends ViewModel {
-    private final PostRepository postRepo = new PostRepository();
+public class PostListViewModel extends AndroidViewModel {
+    private final PostRepository postRepo;
     private final MediatorLiveData<List<PostDTO>> _posts = new MediatorLiveData<>();
     public LiveData<List<PostDTO>> posts = _posts;
 
     public final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
-    public final MutableLiveData<Boolean> isError   = new MutableLiveData<>();
+    public final MutableLiveData<Boolean> isError = new MutableLiveData<>();
 
+    public PostListViewModel(@NonNull Application application) {
+        super(application);
+        postRepo = new PostRepository(application);
+    }
 
-    public void loadPostForYou() {
-        LiveData<Resource<List<PostDTO>>> source = postRepo.getPostForYou();
-        _posts.addSource( source, result -> {
+    public void loadMyPosts() {
+        LiveData<Resource<List<PostDTO>>> source = postRepo.getMyPosts();
+        _posts.addSource(source, result -> {
             if (result.status == Resource.Status.SUCCESS) {
                 _posts.setValue(result.data);
             }
         });
     }
 
-    public void likePost(PostDTO post){
+
+    public void loadPostForYou() {
+        LiveData<Resource<List<PostDTO>>> source = postRepo.getPostForYou();
+        _posts.addSource(source, result -> {
+            if (result.status == Resource.Status.SUCCESS) {
+                _posts.setValue(result.data);
+            }
+        });
+    }
+
+    public void loadTopPosts() {
+        LiveData<Resource<List<PostDTO>>> source = postRepo.getTopPost(0);
+        _posts.addSource(source, result -> {
+            if (result.status == Resource.Status.SUCCESS) {
+                _posts.setValue(result.data);
+            }
+        });
+    }
+
+    public void likePost(PostDTO post) {
         boolean isLiked = post.isLiked();
         if (isLiked) {
             post.setLikes(post.getLikes() - 1);
@@ -39,10 +66,30 @@ public class PostListViewModel extends ViewModel {
         }
         post.setLiked(!isLiked);
         postRepo.likePost(post.getId());
-        _posts.setValue(_posts.getValue());
+        List<PostDTO> currentPosts = _posts.getValue();
+        if (currentPosts != null) {
+            int index = currentPosts.indexOf(post);
+            if (index != -1) {
+                currentPosts.set(index, post);
+                _posts.postValue(new ArrayList<>(currentPosts));
+            }
+        }
     }
 
-    public void addPost(PostDTO post){
+    public void bookmarkPost(PostDTO post) {
+        post.setBookmarked(!post.isBookmarked());
+        postRepo.bookmarkPost(post.getId());
+        List<PostDTO> currentPosts = _posts.getValue();
+        if (currentPosts != null) {
+            int index = currentPosts.indexOf(post);
+            if (index != -1) {
+                currentPosts.set(index, post);
+                _posts.postValue(new ArrayList<>(currentPosts));
+            }
+        }
+    }
+
+    public void addPost(PostDTO post) {
         List<PostDTO> currentPosts = _posts.getValue();
         if (currentPosts == null) {
             currentPosts = new ArrayList<>();

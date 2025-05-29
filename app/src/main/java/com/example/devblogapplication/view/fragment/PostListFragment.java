@@ -1,7 +1,5 @@
 package com.example.devblogapplication.view.fragment;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,13 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.FragmentPostListBinding;
 import com.example.devblogapplication.model.PostDTO;
 import com.example.devblogapplication.view.activity.PostDetailActivity;
+import com.example.devblogapplication.view.activity.ProfileActivity;
 import com.example.devblogapplication.view.adapter.PostAdapter;
 import com.example.devblogapplication.viewmodel.PostListViewModel;
 
@@ -43,17 +41,18 @@ public class PostListFragment extends Fragment {
         binding.setVm(viewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
+
         if (postContent == PostContent.FOR_YOU) {
             viewModel.loadPostForYou();
+        } else if (postContent == PostContent.OWN) {
+            viewModel.loadMyPosts();
+        } else if (postContent == PostContent.TOP) {
+            viewModel.loadTopPosts();
         }
 
         binding.setListener(new PostAdapter.OnPostActionListener() {
             @Override
             public void onLike(PostDTO post, int position) {
-                PostAdapter.PostViewHolder holder = (PostAdapter.PostViewHolder) binding.postView.findViewHolderForAdapterPosition(position);
-                if (holder != null) {
-                    animateLikeButton(holder.binding.like);
-                }
                 viewModel.likePost(post);
             }
 
@@ -68,7 +67,9 @@ public class PostListFragment extends Fragment {
             }
 
             @Override
-            public void onBookmark(PostDTO post) { /*...*/ }
+            public void onBookmark(PostDTO post) {
+                viewModel.bookmarkPost(post);
+            }
 
             @Override
             public void onMore(PostDTO post) { /*...*/ }
@@ -93,46 +94,21 @@ public class PostListFragment extends Fragment {
             @Override
             public void onRead(PostDTO post){
                 if (post == null || post.getId() == null) return;
-                if (post.getExternalPost() == null){
-                    Intent intent = new Intent(getContext(), PostDetailActivity.class);
-                    intent.putExtra("postId", post.getId());
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(getContext(), PostDetailActivity.class);
+                intent.putExtra("postId", post.getId());
+                startActivity(intent);
 
+            }
+
+            @Override
+            public void onAuthorClick(PostDTO post) {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra("uuid", post.getAuthor().getId());
+                startActivity(intent);
             }
         });
 
         return binding.getRoot();
-    }
-
-    private void animateLikeButton(ImageButton likeButton) {
-        likeButton.setPivotX(0f);
-        likeButton.setPivotY(likeButton.getHeight());
-
-        ObjectAnimator scaleXUp = ObjectAnimator.ofFloat(likeButton, "scaleX", 1f, 1.1f);
-        ObjectAnimator scaleYUp = ObjectAnimator.ofFloat(likeButton, "scaleY", 1f, 1.1f);
-        ObjectAnimator rotateLeft = ObjectAnimator.ofFloat(likeButton, "rotation", 0f, -20f);
-
-        ObjectAnimator scaleXDown = ObjectAnimator.ofFloat(likeButton, "scaleX", 1.1f, 1f);
-        ObjectAnimator scaleYDown = ObjectAnimator.ofFloat(likeButton, "scaleY", 1.1f, 1f);
-        ObjectAnimator rotateBack = ObjectAnimator.ofFloat(likeButton, "rotation", -20f, 0f);
-
-        scaleXUp.setDuration(300);
-        scaleYUp.setDuration(300);
-        rotateLeft.setDuration(300);
-        scaleXDown.setDuration(300);
-        scaleYDown.setDuration(300);
-        rotateBack.setDuration(300);
-
-        AnimatorSet upSet = new AnimatorSet();
-        upSet.playTogether(scaleXUp, scaleYUp, rotateLeft);
-
-        AnimatorSet downSet = new AnimatorSet();
-        downSet.playTogether(scaleXDown, scaleYDown, rotateBack);
-
-        AnimatorSet fullAnimation = new AnimatorSet();
-        fullAnimation.playSequentially(upSet, downSet);
-        fullAnimation.start();
     }
 
     public void addPost(PostDTO postDTO){
@@ -140,7 +116,10 @@ public class PostListFragment extends Fragment {
     }
 
     public enum PostContent {
+        TOP,
         FOR_YOU,
-        FOLLOWING
+        FOLLOWING,
+        OWN,
+        BOOKMARK
     }
 }

@@ -1,5 +1,6 @@
 package com.example.devblogapplication.data;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -15,6 +16,8 @@ import com.example.devblogapplication.model.request.CreateNewPostRequest;
 import com.example.devblogapplication.model.request.ShareExternalPostRequest;
 import com.example.devblogapplication.network.ApiService;
 import com.example.devblogapplication.network.NetworkClient;
+import com.example.devblogapplication.room.DevblogDatabase;
+import com.example.devblogapplication.room.UserDAO;
 
 import java.util.List;
 import java.util.Map;
@@ -27,10 +30,66 @@ public class PostRepository {
     private final ApiService api = NetworkClient.api();
     private int pageNumber = 0;
 
+    private UserDAO userDAO;
+
+    public PostRepository(Context appContext) {
+        userDAO = DevblogDatabase.getInstance(appContext).userDAO();
+    }
+
     public LiveData<Resource<List<PostDTO>>> getPostForYou() {
         MutableLiveData<Resource<List<PostDTO>>> liveData = new MutableLiveData<>();
         liveData.postValue(Resource.loading());
         api.getPostForYou(pageNumber).enqueue(new Callback<ApiResponse<List<PostDTO>>>() {
+
+            @Override
+            public void onResponse(Call<ApiResponse<List<PostDTO>>> call, Response<ApiResponse<List<PostDTO>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("Post Repository", "get post success, length: " + response.body().getData().size());
+                    liveData.postValue(Resource.success(response.body().getData()));
+                } else {
+                    ErrorResponse errorResponse = NetworkClient.parseError(response.errorBody());
+                    liveData.postValue(Resource.error(errorResponse.getMessage()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<PostDTO>>> call, Throwable throwable) {
+                liveData.postValue(Resource.error("Something went wrong"));
+            }
+        });
+        pageNumber++;
+
+        return liveData;
+    }
+    public LiveData<Resource<List<PostDTO>>> getTopPost(int pageNum) {
+        MutableLiveData<Resource<List<PostDTO>>> liveData = new MutableLiveData<>();
+        liveData.postValue(Resource.loading());
+        api.getTopPost(pageNum).enqueue(new Callback<ApiResponse<List<PostDTO>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<PostDTO>>> call, Response<ApiResponse<List<PostDTO>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("Post Repository", "get post success, length: " + response.body().getData().size());
+                    liveData.postValue(Resource.success(response.body().getData()));
+                } else {
+                    ErrorResponse errorResponse = NetworkClient.parseError(response.errorBody());
+                    liveData.postValue(Resource.error(errorResponse.getMessage()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<PostDTO>>> call, Throwable throwable) {
+                liveData.postValue(Resource.error("Something went wrong"));
+            }
+        });
+        pageNumber++;
+
+        return liveData;
+    }
+
+    public LiveData<Resource<List<PostDTO>>> getMyPosts() {
+        MutableLiveData<Resource<List<PostDTO>>> liveData = new MutableLiveData<>();
+        liveData.postValue(Resource.loading());
+        api.getUserPosts(userDAO.getCurrentUser().getId()).enqueue(new Callback<ApiResponse<List<PostDTO>>>() {
 
             @Override
             public void onResponse(Call<ApiResponse<List<PostDTO>>> call, Response<ApiResponse<List<PostDTO>>> response) {
@@ -78,6 +137,24 @@ public class PostRepository {
         liveData.postValue(Resource.loading());
 
         api.likePost(postId).enqueue(new Callback<ApiResponse<Map<String, Boolean>>>() {
+
+            @Override
+            public void onResponse(Call<ApiResponse<Map<String, Boolean>>> call, Response<ApiResponse<Map<String, Boolean>>> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Map<String, Boolean>>> call, Throwable throwable) {
+
+            }
+        });
+        return liveData;
+    }
+    public LiveData<Resource<Boolean>> bookmarkPost(Long postId) {
+        MutableLiveData<Resource<Boolean>> liveData = new MutableLiveData<>();
+        liveData.postValue(Resource.loading());
+
+        api.bookmarkPost(postId).enqueue(new Callback<ApiResponse<Map<String, Boolean>>>() {
 
             @Override
             public void onResponse(Call<ApiResponse<Map<String, Boolean>>> call, Response<ApiResponse<Map<String, Boolean>>> response) {

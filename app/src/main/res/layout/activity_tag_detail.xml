@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="vm"
+            type="com.example.devblogapplication.viewmodel.TagDetailViewModel" />
+
+        <variable
+            name="listener"
+            type="com.example.devblogapplication.view.adapter.PostAdapter.OnPostActionListener" />
+    </data>
+    <androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main"
+        tools:context=".view.activity.TagDetailActivity"
+        android:background="@color/white">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tagInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_bg"
+                android:backgroundTint="@color/light_grey"
+                android:layout_margin="20dp"
+                android:padding="20dp">
+
+                <ImageView
+                    android:id="@+id/hash_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_hash"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/hash_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/hash_icon"
+                    app:layout_constraintStart_toEndOf="@id/hash_icon"
+                    android:layout_marginStart="10dp"
+                    android:text="@{vm.tagDetail.data.tag.name}"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/hash_icon"
+                    android:paddingHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@{vm.tagDetail.data.tag.description}"
+                    android:textSize="17sp"
+                    android:textStyle="normal"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@id/hash_icon"
+                    app:layout_constraintTop_toBottomOf="@id/description"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/border_bg"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="3dp"
+                    android:textStyle="bold"
+                    android:textSize="17sp"
+                    android:backgroundTint="@{vm.tagDetail.data.tag.favorite ? @color/grey : @color/blue}"
+                    android:textColor="@{vm.tagDetail.data.tag.favorite ? @color/black : @color/white}"
+                    android:text="@{vm.tagDetail.data.tag.favorite ? `Remove from Favorite` : `Add to Favorite`}"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/relatedPostTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="Posts Related"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:nestedScrollingEnabled="false"
+                app:items="@{vm.tagDetail.data.posts}"
+                app:listener="@{listener}" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

@@ -50,6 +50,7 @@
                 android:src="@drawable/sample_avatar"
                 app:riv_oval="true"
                 app:imageUrl="@{post.author.avatar}"
+                android:onClick="@{() -> listener.onAuthorClick(post)}"
                 android:scaleType="centerCrop"/>
 
             <LinearLayout
@@ -151,8 +152,7 @@
                             android:layout_height="match_parent"
                             app:layout_constraintStart_toStartOf="parent"
                             android:background="@null"
-                            android:src="@drawable/ic_like_selector"
-                            android:onClick="@{() -> listener.onLike(post, position)}"/>
+                            android:src="@drawable/ic_like_selector"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -201,9 +201,12 @@
                 </LinearLayout>
 
                 <ImageButton
+                    android:id="@+id/bookmark"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:background="@null"
+                    android:background="@drawable/border_bg"
+                    android:padding="5dp"
+                    app:backgroundTintBasedOnBookmarked="@{post.isBookmarked}"
                     android:src="@drawable/ic_bookmark_selector"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagDTO implements Serializable {
+public class Tag implements Serializable {
     private int id;
     private String name;
-    private double totalScore;
+    private String description;
 }

@@ -14,7 +14,7 @@ import lombok.Setter;
 public class ExternalPostDTO implements Serializable {
     private String domain;
     private String path;
-
+    private String siteName;
     private String webLogo;
     private String title;
     private String thumbnail;

@@ -1,5 +1,6 @@
 package com.example.devblogapplication.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,9 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.PostViewBinding;
 import com.example.devblogapplication.model.PostDTO;
-import com.example.devblogapplication.model.TagDTO;
+import com.example.devblogapplication.model.Tag;
 import com.google.android.flexbox.FlexboxLayout;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
@@ -42,9 +44,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         PostDTO post = posts.get(position);
         holder.binding.setPost(post);
         holder.binding.like.setSelected(post.isLiked());
-        holder.binding.dislike.setSelected(post.isDisliked());
+        holder.binding.like.setOnClickListener(v -> {
+            listener.onLike(post, position);
+        });
+        holder.binding.bookmark.setSelected(post.isBookmarked());
         holder.binding.flexbox.removeAllViews();
-        for (TagDTO tag : post.getTags()) {
+        for (Tag tag : post.getTags()) {
             TextView tagView = createTagTextView(holder.binding.getRoot().getContext(), tag);
             holder.binding.flexbox.addView(tagView);
         }
@@ -52,7 +57,51 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.binding.setPosition(position);
         holder.binding.executePendingBindings();
     }
-    private TextView createTagTextView(Context context, TagDTO tag) {
+
+
+    @Override
+    public int getItemCount() {
+        return posts.size();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(List<PostDTO> newPosts) {
+        posts.clear();
+        if (newPosts != null) {
+            newPosts.sort(Comparator.comparing(PostDTO::getScore).reversed());
+            posts.addAll(newPosts);
+        }
+        notifyDataSetChanged();
+    }
+
+
+
+    public static class PostViewHolder extends RecyclerView.ViewHolder {
+        public final PostViewBinding binding;
+
+        public PostViewHolder(@NonNull PostViewBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+    }
+
+    public interface OnPostActionListener {
+        void onLike(PostDTO post, int position);
+
+        void onComment(PostDTO post);
+
+        void onBookmark(PostDTO post);
+
+        void onMore(PostDTO post);
+
+        void onReadExternalPost(PostDTO post);
+
+        void onRead(PostDTO post);
+
+        void onAuthorClick(PostDTO post);
+    }
+
+    private TextView createTagTextView(Context context, Tag tag) {
         TextView tagView = new TextView(context);
         String formatted = context.getString(R.string.tag_format, tag.getName());
         tagView.setText(formatted);
@@ -81,41 +130,5 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 (int) (4 * context.getResources().getDisplayMetrics().density)
         );
         return params;
-    }
-
-    @Override
-    public int getItemCount() {
-        return posts.size();
-    }
-
-    public void updateData(List<PostDTO> newPosts) {
-        posts.clear();
-        if (newPosts != null) posts.addAll(newPosts);
-        notifyDataSetChanged();
-    }
-
-
-
-    public static class PostViewHolder extends RecyclerView.ViewHolder {
-        public final PostViewBinding binding;
-
-        public PostViewHolder(@NonNull PostViewBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-        }
-    }
-
-    public interface OnPostActionListener {
-        void onLike(PostDTO post, int position);
-
-        void onComment(PostDTO post);
-
-        void onBookmark(PostDTO post);
-
-        void onMore(PostDTO post);
-
-        void onReadExternalPost(PostDTO post);
-
-        void onRead(PostDTO post);
     }
 }

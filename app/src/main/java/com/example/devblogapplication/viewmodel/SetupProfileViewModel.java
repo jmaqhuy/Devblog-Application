@@ -82,6 +82,7 @@ public class SetupProfileViewModel extends AndroidViewModel {
                     break;
                 case SUCCESS:
                     _loading.setValue(false);
+                    userRepo.insertUser(result.data);
                     break;
                 case ERROR:
                     _loading.setValue(false);

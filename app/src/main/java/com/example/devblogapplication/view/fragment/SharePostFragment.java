@@ -22,7 +22,8 @@ import android.widget.TextView;
 
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.FragmentSharePostBinding;
-import com.example.devblogapplication.room.Tag;
+import com.example.devblogapplication.model.Tag;
+import com.example.devblogapplication.room.TagInRoom;
 import com.example.devblogapplication.utils.FileUtils;
 import com.example.devblogapplication.viewmodel.CreatePostViewModel;
 import com.google.android.flexbox.FlexboxLayout;

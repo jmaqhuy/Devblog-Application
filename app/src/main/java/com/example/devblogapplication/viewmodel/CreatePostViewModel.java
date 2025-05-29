@@ -14,9 +14,10 @@ import com.example.devblogapplication.data.PostRepository;
 import com.example.devblogapplication.data.TagRepository;
 import com.example.devblogapplication.model.PostDTO;
 import com.example.devblogapplication.model.Resource;
+import com.example.devblogapplication.model.Tag;
 import com.example.devblogapplication.model.request.CreateNewPostRequest;
 import com.example.devblogapplication.model.request.ShareExternalPostRequest;
-import com.example.devblogapplication.room.Tag;
+import com.example.devblogapplication.room.TagInRoom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,8 @@ import java.util.stream.Collectors;
 import okhttp3.MultipartBody;
 
 public class CreatePostViewModel extends AndroidViewModel {
-    private final PostRepository postRepository = new PostRepository();
-    private final TagRepository tagRepository = new TagRepository();
+    private final PostRepository postRepository;
+    private final TagRepository tagRepository;
     private final ImageRepository imageRepository = new ImageRepository();
     private final String TAG = "CreatePostViewModel";
     private LiveData<Resource<String>> currentUploadSource; // Track current upload source
@@ -58,6 +59,8 @@ public class CreatePostViewModel extends AndroidViewModel {
 
     public CreatePostViewModel(@NonNull Application application) {
         super(application);
+        tagRepository = new TagRepository(application);
+        postRepository = new PostRepository(application);
         LiveData<Resource<List<Tag>>> tags = tagRepository.getAllTags();
         allTags.addSource(tags, resource -> {
             if (resource.status == Resource.Status.SUCCESS) {
