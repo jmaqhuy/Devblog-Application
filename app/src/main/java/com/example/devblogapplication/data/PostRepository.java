@@ -21,6 +21,7 @@ import com.example.devblogapplication.room.UserDAO;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,7 +29,6 @@ import retrofit2.Response;
 
 public class PostRepository {
     private final ApiService api = NetworkClient.api();
-    private int pageNumber = 0;
 
     private UserDAO userDAO;
 
@@ -36,7 +36,7 @@ public class PostRepository {
         userDAO = DevblogDatabase.getInstance(appContext).userDAO();
     }
 
-    public LiveData<Resource<List<PostDTO>>> getPostForYou() {
+    public LiveData<Resource<List<PostDTO>>> getPostForYou(int pageNumber) {
         MutableLiveData<Resource<List<PostDTO>>> liveData = new MutableLiveData<>();
         liveData.postValue(Resource.loading());
         api.getPostForYou(pageNumber).enqueue(new Callback<ApiResponse<List<PostDTO>>>() {
@@ -57,7 +57,6 @@ public class PostRepository {
                 liveData.postValue(Resource.error("Something went wrong"));
             }
         });
-        pageNumber++;
 
         return liveData;
     }
@@ -81,15 +80,47 @@ public class PostRepository {
                 liveData.postValue(Resource.error("Something went wrong"));
             }
         });
-        pageNumber++;
 
         return liveData;
     }
 
-    public LiveData<Resource<List<PostDTO>>> getMyPosts() {
+    public LiveData<Resource<List<PostDTO>>> getFollowingPosts(int pageNum) {
         MutableLiveData<Resource<List<PostDTO>>> liveData = new MutableLiveData<>();
         liveData.postValue(Resource.loading());
-        api.getUserPosts(userDAO.getCurrentUser().getId()).enqueue(new Callback<ApiResponse<List<PostDTO>>>() {
+        api.getPostFollowing(pageNum).enqueue(new Callback<ApiResponse<List<PostDTO>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<PostDTO>>> call, Response<ApiResponse<List<PostDTO>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("Post Repository", "get post success, length: " + response.body().getData().size());
+                    liveData.postValue(Resource.success(response.body().getData()));
+                } else {
+                    ErrorResponse errorResponse = NetworkClient.parseError(response.errorBody());
+                    liveData.postValue(Resource.error(errorResponse.getMessage()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<PostDTO>>> call, Throwable throwable) {
+                switch (Objects.requireNonNull(throwable.getMessage())) {
+                    case "timeout":
+                        liveData.postValue(Resource.error("Request timed out. Please try again."));
+                        break;
+                    case "no internet":
+                        liveData.postValue(Resource.error("No internet connection. Please check your network settings."));
+                        break;
+                    default:
+                        liveData.postValue(Resource.error("Something went wrong"));
+                }
+            }
+        });
+
+        return liveData;
+    }
+
+    public LiveData<Resource<List<PostDTO>>> getMyPosts(String uuid) {
+        MutableLiveData<Resource<List<PostDTO>>> liveData = new MutableLiveData<>();
+        liveData.postValue(Resource.loading());
+        api.getUserPosts(uuid).enqueue(new Callback<ApiResponse<List<PostDTO>>>() {
 
             @Override
             public void onResponse(Call<ApiResponse<List<PostDTO>>> call, Response<ApiResponse<List<PostDTO>>> response) {
@@ -107,7 +138,6 @@ public class PostRepository {
                 liveData.postValue(Resource.error("Something went wrong"));
             }
         });
-        pageNumber++;
 
         return liveData;
     }
@@ -169,10 +199,10 @@ public class PostRepository {
         return liveData;
     }
 
-    public LiveData<Resource<List<PostCommentDTO>>> getComments(Long postId, @Nullable String parentId) {
+    public LiveData<Resource<List<PostCommentDTO>>> getComments(Long postId) {
         MutableLiveData<Resource<List<PostCommentDTO>>> liveData = new MutableLiveData<>();
 
-        api.getComments(postId, parentId).enqueue(new Callback<ApiResponse<List<PostCommentDTO>>>() {
+        api.getComments(postId).enqueue(new Callback<ApiResponse<List<PostCommentDTO>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<PostCommentDTO>>> call, Response<ApiResponse<List<PostCommentDTO>>> response) {
                 if (response.isSuccessful() && response.body() != null) {

@@ -16,7 +16,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/background"
         android:padding="20dp"
         tools:context=".view.fragment.WritePostFragment">
 
@@ -40,6 +40,7 @@
             android:layout_marginTop="30dp"
             android:text="Title"
             android:textStyle="bold"
+            android:textColor="@color/text_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/thumbnail" />
 
@@ -49,7 +50,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/border_bg"
-            android:backgroundTint="@color/light_grey"
+            android:backgroundTint="@color/edit_text_color"
             android:gravity="center_vertical"
             android:hint="This is very important that ..."
             android:paddingHorizontal="10dp"
@@ -68,6 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Tags"
+            android:textColor="@color/text_color"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleEditText" />
@@ -97,7 +99,8 @@
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/border_bg"
-            android:backgroundTint="@color/light_grey"
+            android:backgroundTint="@color/edit_text_color"
+            android:textColor="@color/text_color"
             android:gravity="center_vertical"
             android:hint="Search your tag here"
             android:paddingHorizontal="10dp"
@@ -117,6 +120,7 @@
             android:layout_marginTop="10dp"
             android:text="Content"
             android:textStyle="bold"
+            android:textColor="@color/text_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tagEditText" />
 
@@ -126,7 +130,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/border_bg"
-            android:backgroundTint="@{vm.previewing ? @color/blue : @color/light_grey}"
+            android:backgroundTint="@{vm.previewing ? @color/blue : @color/grey}"
             android:paddingHorizontal="10dp"
             android:paddingVertical="2dp"
             android:text="Preview"
@@ -141,7 +145,7 @@
             android:layout_height="0dp"
             android:layout_marginVertical="10dp"
             android:background="@drawable/border_bg"
-            android:backgroundTint="@color/light_grey"
+            android:backgroundTint="@color/edit_text_color"
             android:padding="10dp"
             app:layout_constraintBottom_toTopOf="@id/publish"
             app:layout_constraintTop_toBottomOf="@id/content"
@@ -153,7 +157,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="35dp"
                 android:background="@drawable/border_bg"
-                android:backgroundTint="@color/light_grey"
+                android:backgroundTint="@color/edit_text_color"
                 android:gravity="start"
                 android:hint="Support markdown fomat"
                 android:text="@={vm.content}"
@@ -173,7 +177,7 @@
             android:layout_height="0dp"
             android:layout_marginVertical="10dp"
             android:background="@drawable/border_bg"
-            android:backgroundTint="@color/light_grey"
+            android:backgroundTint="@color/edit_text_color"
             android:padding="10dp"
             android:visibility="@{vm.previewing ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/publish"
@@ -188,14 +192,14 @@
             android:text="Publish"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             android:onClick="@{() -> vm.onCreatePost()}"/>
-
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@drawable/border_bg"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/background"
             android:padding="10dp"
             android:visibility="@{vm.filteredTagsLiveData.size() > 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/publish"
@@ -211,5 +215,9 @@
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start" />
         </ScrollView>
+
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

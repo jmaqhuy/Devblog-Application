@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/border_top_bg"
+    android:orientation="vertical"
+    android:backgroundTint="@color/bottom_sheet_background"
+    android:padding="10dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Why are you reporting this post?"
+        android:textSize="18sp"
+        android:paddingVertical="10dp"
+        android:gravity="center"
+        android:textColor="@color/text_color"
+        android:textStyle="bold"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+        <RadioButton
+            android:id="@+id/rb_unrelated"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"/>
+        <TextView
+            android:id="@+id/tv_unrelated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Unrelated to the topic"
+            android:textColor="@color/text_color"
+            android:textSize="17sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+        <RadioButton
+            android:id="@+id/rb_wrong_tag"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"/>
+        <TextView
+            android:id="@+id/tv_wrong_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
+            android:text="Wrong tag"
+            android:textSize="17sp"/>
+    </LinearLayout>
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:flexWrap="wrap"
+        app:flexDirection="row"
+        app:justifyContent="flex_start"
+        app:alignItems="flex_start"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+        <RadioButton
+            android:id="@+id/rb_spam"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_spam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Spam"
+            android:textColor="@color/text_color"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+        <RadioButton
+            android:id="@+id/rb_another"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_another"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Another"
+            android:textColor="@color/text_color"
+            android:textSize="17sp" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Anything else you want to add?"
+        android:textSize="17sp"
+        android:textColor="@color/text_color"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/et_additional_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Additional information (optional)"
+        android:background="@drawable/border_bg"
+        android:backgroundTint="@color/edit_text_color"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:inputType="textMultiLine"
+        android:minLines="2"
+        android:maxLines="5"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/errorTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Error message"
+        android:background="@drawable/border_bg"
+        android:backgroundTint="@color/dark_red"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/reportBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Report"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:background="@drawable/border_bg"
+        android:backgroundTint="@color/blue"
+        android:gravity="center"
+        android:paddingVertical="10dp"/>
+    <TextView
+        android:id="@+id/cancelBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textColor="@color/text_color"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:background="@drawable/border_bg"
+        android:backgroundTint="@color/cancel_button_color"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>

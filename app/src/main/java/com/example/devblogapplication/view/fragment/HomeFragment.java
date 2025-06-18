@@ -21,6 +21,7 @@ import com.example.devblogapplication.databinding.FragmentHomeBinding;
 import com.example.devblogapplication.model.PostDTO;
 import com.example.devblogapplication.view.activity.CreatePostActivity;
 import com.example.devblogapplication.view.activity.MainActivity;
+import com.example.devblogapplication.view.activity.SearchActivity;
 import com.example.devblogapplication.view.adapter.CustomFragmentStateAdapter;
 import com.example.devblogapplication.viewmodel.HomeViewModel;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -33,8 +34,8 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private HomeViewModel viewModel;
     private PostDTO createPostResult;
-    private PostListFragment postForYouFragment = new PostListFragment(PostListFragment.PostContent.FOR_YOU);
-    private PostListFragment postFollowingFragment = new PostListFragment(PostListFragment.PostContent.FOLLOWING);
+    private PostListFragment postForYouFragment = PostListFragment.newInstance(PostListFragment.PostContent.FOR_YOU);
+    private PostListFragment postFollowingFragment = PostListFragment.newInstance(PostListFragment.PostContent.FOLLOWING);
     private List<Fragment> fragments = new ArrayList<>();
     private List<String> tabNames = List.of("For you", "Following");
     private TabLayoutMediator tabLayoutMediator;
@@ -57,7 +58,7 @@ public class HomeFragment extends Fragment {
         });
         fragments.add(postForYouFragment);
         fragments.add(postFollowingFragment);
-        binding.viewPager.setAdapter(new CustomFragmentStateAdapter(this.getActivity(), fragments));
+        binding.viewPager.setAdapter(new CustomFragmentStateAdapter(getActivity(), fragments));
         if (tabLayoutMediator == null){
             tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager,
                     (tab, position) -> tab.setText(tabNames.get(position)));
@@ -69,7 +70,11 @@ public class HomeFragment extends Fragment {
             binding.tabLayout.getTabAt(i).setCustomView(textView);
         }
         binding.userAvatar.setOnClickListener(v -> showProfileFragment());
-
+        binding.searchButton.setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).navigateToSearch();
+            }
+        });
         return binding.getRoot();
     }
     @Override

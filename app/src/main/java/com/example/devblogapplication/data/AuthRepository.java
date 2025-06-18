@@ -9,6 +9,7 @@ import com.example.devblogapplication.model.ApiResponse;
 import com.example.devblogapplication.model.ErrorResponse;
 import com.example.devblogapplication.model.request.LoginRequest;
 import com.example.devblogapplication.model.response.LoginResponse;
+import com.example.devblogapplication.network.ApiFailureHandler;
 import com.example.devblogapplication.network.ApiService;
 import com.example.devblogapplication.network.NetworkClient;
 import com.example.devblogapplication.model.Resource;
@@ -108,7 +109,7 @@ public class AuthRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<LoginResponse>> call, Throwable t) {
-                live.postValue(Resource.error("Something went wrong"));
+                live.postValue(Resource.error(ApiFailureHandler.handleFailure(t)));
             }
         });
 

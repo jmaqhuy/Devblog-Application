@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.activity.CreatePostActivity"
-        android:background="@color/white"
+        android:background="@color/background"
         android:padding="10dp">
 
         <com.google.android.material.tabs.TabLayout
@@ -19,7 +19,7 @@
             app:tabMode="scrollable"
             app:tabGravity="start"
             app:tabRippleColor="@null"
-            android:background="@color/white"/>
+            android:background="@color/background"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"

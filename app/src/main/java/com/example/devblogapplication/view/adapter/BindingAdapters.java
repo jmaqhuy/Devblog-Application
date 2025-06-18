@@ -17,6 +17,7 @@ import com.example.devblogapplication.model.PostCommentDTO;
 import com.example.devblogapplication.model.PostDTO;
 import com.example.devblogapplication.model.Tag;
 import com.example.devblogapplication.model.TagWithScore;
+import com.example.devblogapplication.model.UserDTO;
 import com.example.devblogapplication.viewmodel.TopTagViewModel;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -96,6 +97,19 @@ public class BindingAdapters {
         adapter.updateData(list);
     }
 
+    @BindingAdapter({"users", "listener"})
+    public static void bindUsers(RecyclerView rv,
+                                 List<UserDTO> list,
+                                 UserListAdapter.OnUserClickListener listener) {
+        UserListAdapter adapter = (UserListAdapter) rv.getAdapter();
+        if (adapter == null) {
+            adapter = new UserListAdapter(new ArrayList<>(), listener);
+            rv.setLayoutManager(new LinearLayoutManager(rv.getContext()));
+            rv.setAdapter(adapter);
+        }
+        adapter.updateData(list);
+    }
+
     @BindingAdapter({"tags", "listener"})
     public static void bindTopTags(RecyclerView rv,
                                    List<TagWithScore> listTag,
@@ -151,21 +165,51 @@ public class BindingAdapters {
         adapter.updateData(list);
     }
 
+    @BindingAdapter({"searchHistory", "listener"})
+    public static void bindSearchHistory(RecyclerView rv,
+                                         List<String> searchHistory,
+                                         TextViewAdapter.OnSearchItemClickListener listener) {
+        TextViewAdapter adapter = (TextViewAdapter) rv.getAdapter();
+        if (adapter == null) {
+            adapter = new TextViewAdapter(new ArrayList<>(), listener);
+            rv.setLayoutManager(new LinearLayoutManager(rv.getContext()));
+            rv.setAdapter(adapter);
+        }
+        adapter.updateData(searchHistory);
+    }
+
     @BindingAdapter("backgroundTintBasedOnLiked")
     public static void setBackgroundTintBasedOnLiked(View view, boolean isLiked) {
         Context context = view.getContext();
         int tintColor = isLiked ?
                 ContextCompat.getColor(context, R.color.light_blue) :
-                ContextCompat.getColor(context, R.color.light_grey);
+                ContextCompat.getColor(context, R.color.like_holder_background);
         view.setBackgroundTintList(android.content.res.ColorStateList.valueOf(tintColor));
+    }
+
+    @BindingAdapter("buttonStyleBasedOnFollowing")
+    public static void setButtonStyleBasedOnFollowing(View view, boolean isFollowing) {
+        Context context = view.getContext();
+        int tintColor = isFollowing ?
+                ContextCompat.getColor(context, R.color.edit_text_color) :
+                ContextCompat.getColor(context, R.color.blue);
+
+        view.setBackgroundTintList(android.content.res.ColorStateList.valueOf(tintColor));
+        if (view instanceof TextView) {
+            int textColor = isFollowing ?
+                    ContextCompat.getColor(context, R.color.text_color) :
+                    ContextCompat.getColor(context, R.color.white);
+            ((TextView) view).setTextColor(textColor);
+            ((TextView) view).setText(isFollowing ? "Unfollow" : "Follow");
+        }
     }
 
     @BindingAdapter("backgroundTintBasedOnBookmarked")
     public static void setBackgroundTintBasedOnBookmarked(View view, boolean isBookmarked) {
         Context context = view.getContext();
         int tintColor = isBookmarked ?
-                ContextCompat.getColor(context, R.color.light_yellow) :
-                ContextCompat.getColor(context, R.color.white);
+                ContextCompat.getColor(context, R.color.bookmark_holder_background) :
+                ContextCompat.getColor(context, R.color.background);
         view.setBackgroundTintList(android.content.res.ColorStateList.valueOf(tintColor));
     }
 }

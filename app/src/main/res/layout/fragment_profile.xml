@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="android.view.View"/>
         <variable
             name="vm"
             type="com.example.devblogapplication.viewmodel.ProfileViewModel" />
@@ -14,7 +14,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/background"
         android:padding="10dp"
         tools:context=".view.fragment.ProfileFragment">
 
@@ -22,7 +22,8 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:background="@color/background"
+            app:elevation="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -32,31 +33,44 @@
                     android:id="@+id/fragmentTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:gravity="center"
-                    android:text="@{vm.user.data.username.toLowerCase()}"
+                    android:text="@{`@` + vm.user.data.username.toLowerCase()}"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:textColor="@color/text_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/followBtn"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/border_bg"
-                    android:backgroundTint="@color/blue"
-                    android:gravity="center"
-                    android:paddingHorizontal="13dp"
-                    android:paddingVertical="4dp"
-                    android:text="Follow"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:id="@+id/followBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/border_bg"
+                        android:gravity="center"
+                        android:paddingHorizontal="13dp"
+                        android:paddingVertical="4dp"
+                        app:buttonStyleBasedOnFollowing="@{vm.user.data.isFollowing}"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="10dp"
+                        android:visibility="@{vm.editable ? View.GONE : View.VISIBLE}"/>
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/settingsBtn"
+                        android:src="@drawable/ic_setting"
+                        android:visibility="@{vm.editable ? View.VISIBLE : View.GONE}"/>
+                </LinearLayout>
+
+
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -64,7 +78,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:padding="10dp">
 
                 <com.makeramen.roundedimageview.RoundedImageView
@@ -88,6 +101,7 @@
                     android:maxLength="20"
                     android:text="@{vm.user.data.fullname}"
                     android:textSize="23sp"
+                    android:textColor="@color/text_color"
                     app:layout_constraintStart_toEndOf="@id/userAvatar"
                     app:layout_constraintTop_toTopOf="@id/userAvatar" />
 
@@ -100,6 +114,7 @@
                     app:layout_constraintStart_toEndOf="@id/userAvatar"
                     app:layout_constraintTop_toBottomOf="@id/userFullName"
                     android:background="@drawable/border_bg"
+                    android:backgroundTint="@color/edit_text_color"
                     android:paddingVertical="3dp"
                     android:paddingHorizontal="10dp">
                     <!-- Followers Block -->
@@ -115,12 +130,14 @@
                             android:layout_height="wrap_content"
                             android:text="@{String.valueOf(vm.user.data.posts)}"
                             android:textSize="17sp"
+                            android:textColor="@color/text_color"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
+                            android:textColor="@color/text_color"
                             android:text="Post" />
                     </LinearLayout>
 
@@ -145,13 +162,15 @@
                             android:layout_height="wrap_content"
                             android:text="@{String.valueOf(vm.user.data.followers)}"
                             android:textSize="17sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:textColor="@color/text_color"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="Followers" />
+                            android:text="Followers"
+                            android:textColor="@color/text_color"/>
                     </LinearLayout>
 
                     <!-- Separator Line -->
@@ -175,13 +194,15 @@
                             android:layout_height="wrap_content"
                             android:text="@{String.valueOf(vm.user.data.following)}"
                             android:textSize="17sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:textColor="@color/text_color"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="Following" />
+                            android:text="Following"
+                            android:textColor="@color/text_color"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -192,6 +213,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/userAvatar"
                     android:text="Favorite Tags"
+                    android:textColor="@color/text_color"
                     android:layout_marginTop="20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -213,10 +235,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_bg"
-                android:backgroundTint="@color/light_grey"
+                android:backgroundTint="@color/cancel_button_color"
                 app:tabMode="scrollable"
                 app:tabGravity="start"/>
         </com.google.android.material.appbar.AppBarLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:background="@color/background"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"

@@ -1,6 +1,9 @@
 package com.example.devblogapplication.view.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -63,6 +66,22 @@ public class TagDetailActivity extends AppCompatActivity {
             public void onAuthorClick(PostDTO post) {
 
             }
+
+            @Override
+            public void onExternalAvatarClick(PostDTO post) {
+                if (post == null ||
+                        post.getExternalPost() == null ||
+                        post.getExternalPost().getDomain() == null ||
+                        post.getExternalPost().getPath() == null) return;
+                String url = "https://" + post.getExternalPost().getDomain();
+                try {
+                    Uri uri = Uri.parse(url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(TagDetailActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
         binding.setLifecycleOwner(this);
         int id = getIntent().getIntExtra("id", 0);
@@ -72,6 +91,18 @@ public class TagDetailActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+        binding.setFavoriteBtn.setOnClickListener(v -> {
+            if (viewModel.tagDetail.getValue() != null &&
+                    viewModel.tagDetail.getValue().status == Resource.Status.SUCCESS &&
+                    viewModel.tagDetail.getValue().data != null) {
+
+                viewModel.toggleFavorite();
+
+            } else {
+                // Thông báo khi chưa load xong data hoặc có lỗi
+                Toast.makeText(this, "Please wait for data to load", Toast.LENGTH_SHORT).show();
+            }
         });
 
     }

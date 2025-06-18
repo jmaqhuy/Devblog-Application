@@ -28,8 +28,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.ActivitySetupProfileBinding;
+import com.example.devblogapplication.model.Resource;
+import com.example.devblogapplication.model.Tag;
 import com.example.devblogapplication.utils.FileUtils;
 import com.example.devblogapplication.viewmodel.SetupProfileViewModel;
+
+import java.util.ArrayList;
 
 import okhttp3.MultipartBody;
 
@@ -40,6 +44,8 @@ public class SetupProfileActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private Uri imageUri;
+
+    private boolean fromEditProfile = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +62,15 @@ public class SetupProfileActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(SetupProfileViewModel.class);
         binding.setVm(viewModel);
         binding.setLifecycleOwner(this);
+
         viewModel.email.setValue(getIntent().getStringExtra("email"));
-        Log.d("Setup Profile", "user email: " + getIntent().getStringExtra("email"));
+        viewModel.name.setValue(getIntent().getStringExtra("fullname"));
+        viewModel.username.setValue(getIntent().getStringExtra("username"));
+        fromEditProfile = getIntent().getBooleanExtra("fromEditProfile", false);
+        String avatarUrl = getIntent().getStringExtra("avatarUrl");
+        if (avatarUrl != null) {
+            viewModel.setImageUploadStatus(Resource.success(avatarUrl));
+        }
 
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -113,7 +126,11 @@ public class SetupProfileActivity extends AppCompatActivity {
                 case SUCCESS:
                     if (result.data.getFavoriteTags() == null || result.data.getFavoriteTags().size() < 5) {
                         Intent intent = new Intent(this, SelectFavoriteTagActivity.class);
+                        ArrayList<Tag> selectedTagsArrayList = new ArrayList<>(result.data.getFavoriteTags());
+                        intent.putExtra("SELECTED_TAGS", selectedTagsArrayList);
                         startActivity(intent);
+                    } else if (fromEditProfile) {
+                        finish();
                     } else {
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);

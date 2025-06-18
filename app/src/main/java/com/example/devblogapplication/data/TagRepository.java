@@ -139,4 +139,8 @@ public class TagRepository {
         });
         return liveData;
     }
+
+    public void toggleFavorite(int id, boolean b) {
+        
+    }
 }

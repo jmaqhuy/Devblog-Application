@@ -18,6 +18,7 @@ import com.example.devblogapplication.databinding.FragmentProfileBinding;
 import com.example.devblogapplication.databinding.TagItemBinding;
 import com.example.devblogapplication.model.Resource;
 import com.example.devblogapplication.model.Tag;
+import com.example.devblogapplication.utils.BottomMenu;
 import com.example.devblogapplication.view.activity.TagDetailActivity;
 import com.example.devblogapplication.view.adapter.CustomFragmentStateAdapter;
 import com.example.devblogapplication.view.adapter.RankTagAdapter;
@@ -26,15 +27,18 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
     private ProfileViewModel viewModel;
     private TabLayoutMediator tabLayoutMediator;
 
-    private final ReadmeFragment readmeFragment = new ReadmeFragment();
-    private final PostListFragment yourPostFragment = new PostListFragment(PostListFragment.PostContent.OWN);
-    private final PostListFragment bookmarkFragment = new PostListFragment(PostListFragment.PostContent.BOOKMARK);
+    private ReadmeFragment readmeFragment;
+    private PostListFragment yourPostFragment;
+    private PostListFragment bookmarkFragment;
     private final List<Fragment> fragments = new ArrayList<>();
     private final List<String> tabNames = List.of("Readme", "Post", "Bookmark");
 
@@ -53,7 +57,7 @@ public class ProfileFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            uuid = getArguments().getString("uuid");
+            uuid = getArguments().getString("uuid", null);
             Log.d("TopTagFragment", "Received userId: " + uuid);
         }
     }
@@ -63,60 +67,83 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        if (uuid == null) {
-            uuid = viewModel.getUserIdFromDB();
-        }
         viewModel.getUser(uuid);
         binding.setVm(viewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        viewModel.favoriteTags.observe(getViewLifecycleOwner(), tags -> {
-           if (tags.status == Resource.Status.SUCCESS){
-               displayTags(tags.data, 5);
-           }
+        viewModel.user.observe(getViewLifecycleOwner(), user -> {
+            Log.d("ProfileFragment", "User data updated: " + user.status);
+            if (user.status == Resource.Status.LOADING) {
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.viewPager.setVisibility(View.INVISIBLE);
+
+            } else {
+                if (yourPostFragment == null) {
+                    yourPostFragment = PostListFragment.newInstance(PostListFragment.PostContent.OWN, viewModel.getUserId());
+                }
+                if (bookmarkFragment == null) {
+                    bookmarkFragment = PostListFragment.newInstance(PostListFragment.PostContent.BOOKMARK);
+                }
+                if (readmeFragment == null) {
+                    readmeFragment = ReadmeFragment.newInstance(Boolean.TRUE.equals(viewModel.editable.getValue()));
+                }
+                fragments.add(readmeFragment);
+                fragments.add(yourPostFragment);
+                fragments.add(bookmarkFragment);
+
+                binding.viewPager.setAdapter(new CustomFragmentStateAdapter(requireActivity(), fragments));
+                if (tabLayoutMediator == null){
+                    tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager,
+                            (tab, position) -> tab.setText(tabNames.get(position)));
+                    tabLayoutMediator.attach();
+                }
+                for (int i = 0; i < binding.tabLayout.getTabCount(); i++) {
+                    TextView textView = (TextView) LayoutInflater
+                            .from(this.getContext()).inflate(R.layout.tab_title, null);
+                    binding.tabLayout.getTabAt(i).setCustomView(textView);
+                }
+                displayTags(user.data.getFavoriteTags(), 5);
+                binding.progressBar.setVisibility(View.GONE);
+                binding.viewPager.setVisibility(View.VISIBLE);
+
+            }
         });
-
-
-        fragments.add(readmeFragment);
-        fragments.add(yourPostFragment);
-        fragments.add(bookmarkFragment);
-
-        binding.viewPager.setAdapter(new CustomFragmentStateAdapter(requireActivity(), fragments));
-        if (tabLayoutMediator == null){
-            tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager,
-                    (tab, position) -> tab.setText(tabNames.get(position)));
-            tabLayoutMediator.attach();
-        }
-
-
-        for (int i = 0; i < binding.tabLayout.getTabCount(); i++) {
-            TextView textView = (TextView) LayoutInflater
-                    .from(this.getContext()).inflate(R.layout.tab_title, null);
-            binding.tabLayout.getTabAt(i).setCustomView(textView);
-        }
-
-
+        binding.followBtn.setOnClickListener(v -> {
+            Log.d("ProfileFragment", "Follow button clicked");
+            viewModel.followUser();
+        });
+        viewModel.followUser.observe(getViewLifecycleOwner(), result -> {
+            if (result.status == Resource.Status.SUCCESS && result.data != null) {
+                viewModel.updateProfile();
+            }
+        });
+        binding.settingsBtn.setOnClickListener(v -> {
+            BottomMenu.ShowSettingBottomMenu(requireContext(), Objects.requireNonNull(viewModel.user.getValue()).data);
+        });
         return binding.getRoot();
     }
 
 
-    private void displayTags(List<Tag> tags, int sz) {
+    private void displayTags(Set<Tag> tags, int sz) {
         binding.flexbox.removeAllViews();
         if (tags == null) return;
-        int max = Math.min(tags.size(), sz);
-        for (int i = 0; i < max; i++) {
-            TextView tagView = createTagTextView(tags.get(i), id -> {
+        int i = 0;
+        for (Tag tag : tags) {
+            TextView tagView = createTagTextView(tag, (view,id) -> {
                 Intent intent = new Intent(getActivity(), TagDetailActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
             });
             binding.flexbox.addView(tagView);
+            if (++i == sz) {
+                break;
+            }
         }
         if (tags.size() > sz) {
             String more = " +" + (tags.size() - sz) + " ";
-            TextView tagView = createTagTextView(new Tag(-1, more, null), id -> {
+            TextView tagView = createTagTextView(new Tag(-1, more, null), (view, id) -> {
                 binding.flexbox.removeAllViews();
-                displayTags(viewModel.favoriteTags.getValue().data, viewModel.favoriteTags.getValue().data.size());
+                displayTags(viewModel.user.getValue().data.getFavoriteTags(), viewModel.user.getValue().data.getFavoriteTags().size());
             });
             binding.flexbox.addView(tagView);
         }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.FragmentExploreBinding;
+import com.example.devblogapplication.view.activity.MainActivity;
 import com.example.devblogapplication.view.adapter.CustomFragmentStateAdapter;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class ExploreFragment extends Fragment {
     private FragmentExploreBinding binding;
-    private PostListFragment topPostFragment = new PostListFragment(PostListFragment.PostContent.TOP);
+    private PostListFragment topPostFragment = PostListFragment.newInstance(PostListFragment.PostContent.TOP);
     private TopTagFragment topTagFragment = new TopTagFragment();
     private List<Fragment> fragments = List.of(topPostFragment, topTagFragment);
 
@@ -45,6 +46,11 @@ public class ExploreFragment extends Fragment {
                     .from(this.getContext()).inflate(R.layout.tab_title, null);
             binding.tabLayout.getTabAt(i).setCustomView(textView);
         }
+        binding.searchButton.setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).navigateToSearch();
+            }
+        });
         return binding.getRoot();
 
     }

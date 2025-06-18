@@ -15,14 +15,16 @@
                 android:id="@+id/readme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Empty" />
+                android:text="Empty"
+                android:textColor="@color/text_color"/>
 
             <Button
                 android:id="@+id/updateReadmeBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Update" />
+                android:text="Update"
+                android:textColor="@color/white"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

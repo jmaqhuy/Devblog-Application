@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="vm"
+            type="com.example.devblogapplication.viewmodel.SearchViewModel" />
+
+        <variable
+            name="itemSearchListener"
+            type="com.example.devblogapplication.view.adapter.TextViewAdapter.OnSearchItemClickListener" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main"
+        tools:context=".view.activity.SearchActivity"
+        android:background="@color/background">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            app:layout_constraintTop_toTopOf="parent">
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back"
+                android:background="@null"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btnBack"
+                app:layout_constraintEnd_toStartOf="@id/btnSearch"
+                android:background="@drawable/border_bg"
+                android:backgroundTint="@color/edit_text_color"
+                android:layout_marginHorizontal="10dp"
+                android:maxLines="1"
+                android:inputType="text"
+                android:hint="devblog"
+                android:text="@={vm.keyword}"
+                android:textColor="@color/text_color"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="10dp"/>
+            <TextView
+                android:id="@+id/btnSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Search"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/blue"
+                android:onClick="@{() -> vm.search(``)}"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/searchBar"
+            app:tabMode="scrollable"
+            app:tabGravity="start"
+            android:background="@color/background"
+            app:tabRippleColor="@null"/>
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/tabLayout"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:visibility="@{vm.isRecommendVisible ? View.VISIBLE : View.GONE}"
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            app:searchHistory="@{vm.recyclerList}"
+            app:listener="@{itemSearchListener}"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/searchBar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/background"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

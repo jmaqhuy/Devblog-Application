@@ -62,6 +62,7 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void setUpTabLayoutWithViewpager() {
+
         binding.viewPager.setAdapter(new CustomFragmentStateAdapter(this, fragments));
         if (tabLayoutMediator == null) {
             tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager,

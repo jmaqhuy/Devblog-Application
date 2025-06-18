@@ -28,72 +28,38 @@ public class TopTagViewModel extends AndroidViewModel {
     private final MediatorLiveData<List<Tag>> allTagResource = new MediatorLiveData<>();
     public final LiveData<List<Tag>> allTags = allTagResource;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
-
     public TopTagViewModel(@NonNull Application application) {
         super(application);
         tagRepository = new TagRepository(application);
+        getTopTag();
     }
 
-    public void getTopTags() {
-        // Execute the entire operation in background thread
-        executor.execute(() -> {
-            try {
-                LiveData<Resource<List<TagWithScore>>> topTagsLiveData = tagRepository.getTopTags();
+    public void getTopTag(){
+        LiveData<Resource<List<TagWithScore>>> topTagsLiveData = tagRepository.getTopTags();
+        tagResource.addSource(topTagsLiveData, result -> {
+            tagResource.setValue(result.data);
 
-                mainHandler.post(() -> {
-                    tagResource.addSource(topTagsLiveData, result -> {
-                        if (result.status == Resource.Status.SUCCESS) {
-                            executor.execute(() -> {
-                                try {
-                                    List<TagWithScore> processedTopTags = result.data;
-                                    mainHandler.post(() -> tagResource.setValue(processedTopTags));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    mainHandler.post(() -> tagResource.setValue(null));
-                                }
-                            });
-                        }
-                    });
-                });
-
+            if (result.status != Resource.Status.LOADING) {
+                tagResource.removeSource(topTagsLiveData);
                 LiveData<Resource<List<Tag>>> allTagsLiveData = tagRepository.getAllTags();
-
-                mainHandler.post(() -> {
-                    allTagResource.addSource(allTagsLiveData, result -> {
-                        if (result.status == Resource.Status.SUCCESS) {
-                            executor.execute(() -> {
-                                try {
-                                    List<Tag> sortedTags = result.data.stream()
-                                            .sorted(Comparator.comparing(Tag::getName, String.CASE_INSENSITIVE_ORDER))
-                                            .collect(Collectors.toList());
-
-                                    mainHandler.post(() -> allTagResource.setValue(sortedTags));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    mainHandler.post(() -> allTagResource.setValue(null));
-                                }
+                allTagResource.addSource(allTagsLiveData, allTagsResult -> {
+                    if (allTagsResult.status == Resource.Status.SUCCESS) {
+                        new Thread(() -> {
+                            List<Tag> sortedTags = allTagsResult.data.stream()
+                                    .sorted(Comparator.comparing(Tag::getName, String.CASE_INSENSITIVE_ORDER))
+                                    .collect(Collectors.toList());
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                allTagResource.setValue(sortedTags);
                             });
-                        }
-                    });
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                mainHandler.post(() -> {
-                    tagResource.setValue(null);
-                    allTagResource.setValue(null);
+                        }).start();
+                    } else {
+                        allTagResource.setValue(null);
+                    }
+                    if (allTagsResult.status != Resource.Status.LOADING) {
+                        allTagResource.removeSource(allTagsLiveData);
+                    }
                 });
             }
         });
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        if (executor != null && !executor.isShutdown()) {
-            executor.shutdown();
-        }
     }
 }

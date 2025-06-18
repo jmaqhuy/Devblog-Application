@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +15,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.model.Resource;
 import com.example.devblogapplication.utils.SecurePrefsHelper;
+import com.example.devblogapplication.utils.ThemeHelper;
 import com.example.devblogapplication.viewmodel.SplashViewModel;
 
 @SuppressLint("CustomSplashScreen")
@@ -26,11 +29,21 @@ public class SplashScreenActivity extends AppCompatActivity {
     private long startTime;
     private static final String TAG = "SplashScreenActivity";
 
+    private int getAnimationResource() {
+        return ThemeHelper.getThemeBasedRawResource(
+                this,
+                R.raw.logo_animation_light,
+                R.raw.logo_animation_dark
+        );
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash_screen);
+        LottieAnimationView logoAnimation = findViewById(R.id.logo_animation);
+        logoAnimation.setAnimation(getAnimationResource());
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets s = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -61,10 +74,15 @@ public class SplashScreenActivity extends AppCompatActivity {
                     finish();
                 }, delay);
             }
-        } else {
+        } else if (SecurePrefsHelper.getAccessToken(this) != null) {
             vm.sessionValid.observe(this, result -> {
                 if (result.status == Resource.Status.LOADING) return;
                 Log.d(TAG, "onCreate: Remember = true");
+
+                if (result.status == Resource.Status.ERROR) {
+                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 long elapsed = System.currentTimeMillis() - startTime;
                 long delay = Math.max(0, MIN_DELAY - elapsed);
@@ -111,8 +129,14 @@ public class SplashScreenActivity extends AppCompatActivity {
             });
 
             vm.checkSession();
+        } else {
+            long elapsed = System.currentTimeMillis() - startTime;
+            long delay = Math.max(0, MIN_DELAY - elapsed);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                Intent next = new Intent(this, WelcomeActivity.class);
+                startActivity(next);
+                finish();
+            }, delay);
         }
-
-
     }
 }

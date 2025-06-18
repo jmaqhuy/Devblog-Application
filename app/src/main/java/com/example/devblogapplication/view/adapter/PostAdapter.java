@@ -68,7 +68,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void updateData(List<PostDTO> newPosts) {
         posts.clear();
         if (newPosts != null) {
-            newPosts.sort(Comparator.comparing(PostDTO::getScore).reversed());
             posts.addAll(newPosts);
         }
         notifyDataSetChanged();
@@ -99,6 +98,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         void onRead(PostDTO post);
 
         void onAuthorClick(PostDTO post);
+
+        void onExternalAvatarClick(PostDTO post);
     }
 
     private TextView createTagTextView(Context context, Tag tag) {

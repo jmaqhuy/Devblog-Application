@@ -127,7 +127,7 @@ public class SharePostFragment extends Fragment {
 
     private void updateTagSelectionState(TextView tagView, boolean isSelected) {
         tagView.setSelected(isSelected);
-        int textColor = isSelected ? R.color.white : R.color.black;
+        int textColor = isSelected ? R.color.white : R.color.text_color;
         tagView.setTextColor(ContextCompat.getColor(this.getContext(), textColor));
     }
 

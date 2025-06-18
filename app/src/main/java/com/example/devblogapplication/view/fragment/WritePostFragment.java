@@ -54,6 +54,7 @@ public class WritePostFragment extends Fragment {
             }
         });
 
+
         viewModel.filteredTagsLiveData.observe(getViewLifecycleOwner(), this::displayTags);
         viewModel.selectedTags.observe(getViewLifecycleOwner(), tags -> {
             binding.tagContainer.removeAllViews();
@@ -168,7 +169,7 @@ public class WritePostFragment extends Fragment {
 
     private void updateTagSelectionState(TextView tagView, boolean isSelected) {
         tagView.setSelected(isSelected);
-        int textColor = isSelected ? R.color.white : R.color.black;
+        int textColor = isSelected ? R.color.white : R.color.text_color;
         tagView.setTextColor(ContextCompat.getColor(this.getContext(), textColor));
     }
 

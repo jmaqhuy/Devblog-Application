@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="searchType"
+            type="String" />
+        <variable
+            name="vm"
+            type="com.example.devblogapplication.viewmodel.SearchViewModel" />
+        <variable
+            name="tagListener"
+            type="com.example.devblogapplication.view.adapter.RankTagAdapter.OnTagActionListener" />
+        <variable
+            name="postListener"
+            type="com.example.devblogapplication.view.adapter.PostAdapter.OnPostActionListener" />
+        <variable
+            name="userListener"
+            type="com.example.devblogapplication.view.adapter.UserListAdapter.OnUserClickListener" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.fragment.SearchResultFragment">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- User Section -->
+                <TextView
+                    android:id="@+id/textViewUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:visibility="@{(searchType == `ALL` || searchType == `USER`) &amp;&amp; vm.isShowUser ? View.VISIBLE : View.GONE}" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:users="@{vm.searchResponse.data.users}"
+                    app:listener="@{userListener}"
+                    android:layout_marginBottom="16dp"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="@{(searchType == `ALL` || searchType == `USER`) &amp;&amp; vm.isShowUser ? View.VISIBLE : View.GONE}" />
+
+                <!-- Tag Section -->
+                <TextView
+                    android:id="@+id/textViewTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tag"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:visibility="@{(searchType == `ALL` || searchType == `TAG`) &amp;&amp; vm.isShowTag ? View.VISIBLE : View.GONE}" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewTag"
+                    android:layout_width="match_parent"
+                    app:filteredTag="@{vm.searchResponse.data.tags}"
+                    app:listener="@{tagListener}"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="@{(searchType == `ALL` || searchType == `TAG`) &amp;&amp; vm.isShowTag ? View.VISIBLE : View.GONE}" />
+
+                <!-- Post Section -->
+                <TextView
+                    android:id="@+id/textViewPost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Post"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:visibility="@{(searchType == `ALL` || searchType == `POST`) &amp;&amp; vm.isShowPost ? View.VISIBLE : View.GONE}" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:items="@{vm.searchResponse.data.posts}"
+                    app:listener="@{postListener}"
+                    android:layout_marginBottom="16dp"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="@{(searchType == `ALL` || searchType == `POST`) &amp;&amp; vm.isShowPost ? View.VISIBLE : View.GONE}" />
+
+                <!-- No Results Texts -->
+                <TextView
+                    android:id="@+id/textNoUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No users found."
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"
+                    android:visibility="@{(searchType == `USER` &amp;&amp; (!vm.isShowUser)) ? View.VISIBLE : View.GONE}" />
+                <TextView
+                    android:id="@+id/textNoTag"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No tags found."
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"
+                    android:visibility="@{(searchType == `TAG` &amp;&amp; (!vm.isShowTag)) ? View.VISIBLE : View.GONE}" />
+                <TextView
+                    android:id="@+id/textNoPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No posts found."
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"
+                    android:visibility="@{(searchType == `POST` &amp;&amp; (!vm.isShowPost)) ? View.VISIBLE : View.GONE}" />
+                <TextView
+                    android:id="@+id/textNoAll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Not found anything."
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"
+                    android:visibility="@{(searchType == `ALL` &amp;&amp; (!vm.isShowUser &amp;&amp; !vm.isShowTag &amp;&amp; !vm.isShowPost)) ? View.VISIBLE : View.GONE}" />
+
+            </LinearLayout>
+        </ScrollView>
+        <!-- ProgressBar overlay -->
+        <FrameLayout
+            android:id="@+id/progressOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background"
+            android:visibility="@{vm.isLoading ? View.VISIBLE : View.GONE}">
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

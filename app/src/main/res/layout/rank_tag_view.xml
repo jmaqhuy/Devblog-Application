@@ -16,10 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border_bg"
-        android:backgroundTint="@color/light_grey"
+        android:backgroundTint="@color/cancel_button_color"
         android:padding="10dp"
         android:layout_marginBottom="5dp"
-        android:onClick="@{() -> listener.onTagClick(tag.id)}">
+        android:onClick="@{(view) -> listener.onTagClick(view, tag.id)}">
         <TextView
             android:id="@+id/rank"
             android:layout_width="wrap_content"
@@ -28,6 +28,7 @@
             android:textStyle="bold"
             android:textSize="25sp"
             android:layout_marginStart="20dp"
+            android:textColor="@color/text_color"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -45,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="17sp"
-                android:textColor="@color/black"
+                android:textColor="@color/text_color"
                 android:text="@{tag.name}"
                 android:textStyle="bold"/>
 

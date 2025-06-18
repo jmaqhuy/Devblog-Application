@@ -12,7 +12,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/background"
         tools:context=".view.activity.RegisterActivity">
 
         <LinearLayout
@@ -30,6 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Join the dev community!"
+                android:textColor="@color/text_color"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
@@ -38,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:text="We're a place where coders share, stay up-to-date and grow their careers."
                 android:textSize="14sp"
+                android:textColor="@color/text_color"
                 android:gravity="center"/>
 
             <ImageView
@@ -53,13 +55,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:text="@string/app_name"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textSize="35sp"
+                android:textColor="@color/text_color"
+                android:fontFamily="@font/bebas_neue_regular"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
+
+                android:textColor="@color/text_color"
                 android:layout_marginBottom="10dp"
                 android:text="Email"
                 android:textSize="14sp"
@@ -71,6 +76,7 @@
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/border_bg"
                 android:drawableStart="@drawable/ic_email"
+                android:backgroundTint="@color/edit_text_color"
                 android:drawablePadding="12dp"
                 android:hint="Enter your email"
                 android:padding="10dp"
@@ -84,6 +90,8 @@
                 android:layout_gravity="start"
                 android:layout_marginBottom="10dp"
                 android:text="Password"
+
+                android:textColor="@color/text_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -95,6 +103,7 @@
                 android:drawableStart="@drawable/ic_lock"
                 android:drawablePadding="12dp"
                 android:hint="Enter your password"
+                android:backgroundTint="@color/edit_text_color"
                 android:padding="10dp"
                 android:textSize="14sp"
                 android:text="@={vm.password}"
@@ -107,6 +116,8 @@
                 android:layout_marginBottom="10dp"
                 android:text="Retype Password"
                 android:textSize="14sp"
+
+                android:textColor="@color/text_color"
                 android:textStyle="bold" />
 
             <EditText
@@ -120,6 +131,7 @@
                 android:padding="10dp"
                 android:textSize="14sp"
                 android:text="@={vm.retypePassword}"
+                android:backgroundTint="@color/edit_text_color"
                 android:inputType="textPassword"/>
             <TextView
                 android:layout_width="300dp"
@@ -128,6 +140,7 @@
                 android:layout_marginBottom="10dp"
                 android:text="By signing up, you are agreeing to our privacy policy and terms of use."
                 android:textSize="12sp"
+                android:textColor="@color/text_color"
                 android:textStyle="italic" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -139,6 +152,7 @@
                     android:text="@{vm.loading ? `` : `Sign Up`}"
                     android:textAllCaps="true"
                     android:onClick="@{()-> vm.onClickRegisterButton()}"
+                    android:textColor="@color/white"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
                 <ProgressBar

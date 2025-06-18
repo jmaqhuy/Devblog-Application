@@ -2,6 +2,7 @@ package com.example.devblogapplication.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -69,6 +70,6 @@ public class RankTagAdapter extends RecyclerView.Adapter<RankTagAdapter.TagViewH
     }
 
     public interface OnTagActionListener {
-        void onTagClick(int id);
+        void onTagClick(View view, int id);
     }
 }

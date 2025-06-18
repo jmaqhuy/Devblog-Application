@@ -13,7 +13,10 @@ import com.example.devblogapplication.model.Tag;
 import com.example.devblogapplication.room.TagInRoom;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SelectFavoriteTagViewModel extends AndroidViewModel {
     private final TagRepository repo;
@@ -30,6 +33,8 @@ public class SelectFavoriteTagViewModel extends AndroidViewModel {
     private MutableLiveData<String> _errorMessage = new MutableLiveData<>("");
     public MutableLiveData<Boolean> searchEmptyResult = new MutableLiveData<>(false);
     public MutableLiveData<String> searchErrorMessage = new MutableLiveData<>("");
+
+    public final MutableLiveData<Set<Tag>> selectedTags = new MutableLiveData<>(new HashSet<>());
 
 
     public LiveData<Boolean> loading = _loading;
@@ -48,9 +53,43 @@ public class SelectFavoriteTagViewModel extends AndroidViewModel {
         return filteredTags;
     }
 
+    private List<Tag> fullTagList = new ArrayList<>();
+    private boolean isTagFilterSourceAdded = false;
+
     public SelectFavoriteTagViewModel(Application application) {
         super(application);
         repo = new TagRepository(application);
+        // Add searchBox source only once
+        if (!isTagFilterSourceAdded) {
+            filteredTags.addSource(searchBox, query -> {
+                searchEmptyResult.setValue(false);
+                if (fullTagList == null || fullTagList.isEmpty()) {
+                    filteredTags.setValue(new ArrayList<>());
+                    return;
+                }
+                if (query == null || query.isEmpty()) {
+                    filteredTags.setValue(fullTagList);
+                } else {
+                    List<Tag> filtered = new ArrayList<>();
+                    for (Tag tag : fullTagList) {
+                        if (tag.getName().toLowerCase().contains(query.toLowerCase())) {
+                            filtered.add(tag);
+                        }
+                    }
+                    filteredTags.setValue(filtered);
+                    if (filtered.isEmpty()) {
+                        searchErrorMessage.setValue("No tags found matching \"#" + query + "\"");
+                        searchEmptyResult.setValue(true);
+                    }
+                }
+            });
+            isTagFilterSourceAdded = true;
+        }
+    }
+
+    private void setupTagFiltering(List<Tag> tags) {
+        fullTagList = tags;
+        filteredTags.setValue(tags);
     }
 
     public void getAllTags() {
@@ -84,34 +123,16 @@ public class SelectFavoriteTagViewModel extends AndroidViewModel {
         });
 
     }
-    private void setupTagFiltering(List<Tag> fullTagList) {
-        filteredTags.addSource(searchBox, query -> {
-            searchEmptyResult.setValue(false);
-            if (query == null || query.isEmpty()) {
-                filteredTags.setValue(fullTagList);
-            } else {
-                List<Tag> filtered = new ArrayList<>();
-                for (Tag tag : fullTagList) {
-                    if (tag.getName().toLowerCase().contains(query.toLowerCase())) {
-                        filtered.add(tag);
-                    }
-                }
-                filteredTags.setValue(filtered);
-                if (filtered.isEmpty()) {
-                    searchErrorMessage.setValue("No tags found matching \"#" + query + "\"");
-                    searchEmptyResult.setValue(true);
-                }
-            }
-        });
 
-        filteredTags.setValue(fullTagList);
-    }
-
-    public void updateFavoriteTags(List<Tag> tag) {
+    public void updateFavoriteTags() {
         if (updating.getValue() != null && updating.getValue()) {
             return;
         }
-        LiveData<Resource> source = repo.updateFavoriteTags(tag);
+        if (selectedTags.getValue() == null || selectedTags.getValue().isEmpty()) {
+            _updateResult.setValue(Resource.error("No tags selected"));
+            return;
+        }
+        LiveData<Resource> source = repo.updateFavoriteTags(new ArrayList<>(selectedTags.getValue()));
         _updateResult.addSource(source, result -> {
             _updateResult.setValue(result);
             switch (result.status) {
@@ -133,27 +154,3 @@ public class SelectFavoriteTagViewModel extends AndroidViewModel {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

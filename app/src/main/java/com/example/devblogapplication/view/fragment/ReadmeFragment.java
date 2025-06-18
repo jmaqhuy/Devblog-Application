@@ -2,6 +2,7 @@ package com.example.devblogapplication.view.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,6 +17,25 @@ import com.example.devblogapplication.viewmodel.ProfileViewModel;
 
 public class ReadmeFragment extends Fragment {
     private FragmentReadmeBinding binding;
+
+    private static boolean isEditable;
+
+    public static ReadmeFragment newInstance(boolean isEditable) {
+        ReadmeFragment fragment = new ReadmeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("isEditable", isEditable);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isEditable = getArguments().getBoolean("isEditable", false);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -27,19 +47,22 @@ public class ReadmeFragment extends Fragment {
                 binding.readme.setText(user.data.getReadme());
             }
         });
-        binding.updateReadmeBtn.setOnClickListener(v -> {
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in_up,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out_down
-                    )
-                    .replace(R.id.container, new ViewAndEditMarkdownFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
+        if (isEditable) {
+            binding.updateReadmeBtn.setVisibility(View.VISIBLE);
+        } else {
+            binding.updateReadmeBtn.setVisibility(View.GONE);
+        }
+        binding.updateReadmeBtn.setOnClickListener(v -> getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in_up,
+                        R.anim.fade_out,
+                        R.anim.fade_in,
+                        R.anim.slide_out_down
+                )
+                .replace(R.id.container, new ViewAndEditMarkdownFragment())
+                .addToBackStack(null)
+                .commit());
         return binding.getRoot();
     }
 }

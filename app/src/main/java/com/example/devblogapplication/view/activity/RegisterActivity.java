@@ -14,8 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.ActivityRegisterBinding;
+import com.example.devblogapplication.model.Tag;
 import com.example.devblogapplication.utils.SecurePrefsHelper;
 import com.example.devblogapplication.viewmodel.RegisterViewModel;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -52,13 +56,15 @@ public class RegisterActivity extends AppCompatActivity {
                             || result.data.getUserInfo().getUsername().isEmpty()
                             || result.data.getUserInfo().getFullname().isEmpty()) {
                         Intent intent = new Intent(this, SetupProfileActivity.class);
-                        intent.putExtra("email", result.data.getUserInfo().getEmail());
-                        Log.d("RegisterActivity", "user email: " + result.data.getUserInfo().getEmail());
+                        intent.putExtra("uuid", result.data.getUserInfo().getId());
                         startActivity(intent);
                         finishAffinity();
                     } else if (result.data.getUserInfo().getFavoriteTags() == null
                             || result.data.getUserInfo().getFavoriteTags().size() < 5) {
                         Intent intent = new Intent(this, SelectFavoriteTagActivity.class);
+                        Gson gson = new Gson();
+                        String tagsJson = gson.toJson(result.data.getUserInfo().getFavoriteTags());
+                        intent.putExtra("SELECTED_TAGS_JSON", tagsJson);
                         startActivity(intent);
                         finishAffinity();
                     } else {

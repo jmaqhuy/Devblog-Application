@@ -19,6 +19,4 @@ public class PostCommentDTO implements Serializable {
     private Long postId;
     private String content;
     private LocalDateTime commentAt;
-    private Long parentId;
-    private Integer replies;
 }

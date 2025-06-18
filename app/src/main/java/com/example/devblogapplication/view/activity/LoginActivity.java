@@ -14,8 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.devblogapplication.R;
 import com.example.devblogapplication.databinding.ActivityLoginBinding;
+import com.example.devblogapplication.model.Tag;
 import com.example.devblogapplication.utils.SecurePrefsHelper;
 import com.example.devblogapplication.viewmodel.LoginViewModel;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
     private LoginViewModel viewModel;
@@ -35,13 +39,15 @@ public class LoginActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         binding.setVm(viewModel);
         binding.setLifecycleOwner(this);
+        if (SecurePrefsHelper.getRememberMe(this)) {
+            binding.rememberMeCheckbox.setChecked(true);
+        }
 
         viewModel.loginResult.observe(this, result -> {
             switch (result.status) {
                 case SUCCESS:
                     Intent intent;
                     SecurePrefsHelper.saveAccessToken(this, result.data.getToken());
-                    Toast.makeText(this, "Token save" + result.data.getToken(), Toast.LENGTH_SHORT).show();
                     if (binding.rememberMeCheckbox.isChecked()){
                         SecurePrefsHelper.saveRememberMe(this, true);
                     } else {
@@ -55,6 +61,10 @@ public class LoginActivity extends AppCompatActivity {
                     } else if (result.data.getUserInfo().getFavoriteTags() == null
                             || result.data.getUserInfo().getFavoriteTags().size() < 5) {
                         intent = new Intent(this, SelectFavoriteTagActivity.class);
+                        Gson gson = new Gson();
+                        String tagsJson = gson.toJson(result.data.getUserInfo().getFavoriteTags());
+
+                        intent.putExtra("SELECTED_TAGS_JSON", tagsJson);
 
                     } else {
                         intent = new Intent(this, MainActivity.class);

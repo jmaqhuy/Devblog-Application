@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.devblogapplication.data.ImageRepository;
 import com.example.devblogapplication.data.PostRepository;
@@ -54,6 +55,21 @@ public class CreatePostViewModel extends AndroidViewModel {
 
     private final MediatorLiveData<List<Tag>> filteredTags = new MediatorLiveData<>();
     public final LiveData<List<Tag>> filteredTagsLiveData = filteredTags;
+    private final Observer<String> searchBoxObserver = query -> {
+        List<Tag> fullTagList = allTags.getValue();
+        if (fullTagList == null) return;
+        if (query == null || query.isEmpty()) {
+            filteredTags.setValue(List.of());
+        } else {
+            List<Tag> filtered = new ArrayList<>();
+            for (Tag tag : fullTagList) {
+                if (tag.getName().toLowerCase().contains(query.toLowerCase())) {
+                    filtered.add(tag);
+                }
+            }
+            filteredTags.setValue(filtered);
+        }
+    };
 
     public final MutableLiveData<Boolean> previewing = new MutableLiveData<>(false);
 
@@ -73,20 +89,9 @@ public class CreatePostViewModel extends AndroidViewModel {
 
     public void setupTagFiltering(List<Tag> fullTagList) {
         if (fullTagList == null) return;
-        filteredTags.addSource(searchBox, query -> {
-            if (query == null || query.isEmpty()) {
-                filteredTags.setValue(List.of());
-            } else {
-                List<Tag> filtered = new ArrayList<>();
-                for (Tag tag : fullTagList) {
-                    if (tag.getName().toLowerCase().contains(query.toLowerCase())) {
-                        filtered.add(tag);
-                    }
-                }
-                filteredTags.setValue(filtered);
-            }
-        });
-
+        // Remove previous observer if exists
+        filteredTags.removeSource(searchBox);
+        filteredTags.addSource(searchBox, searchBoxObserver);
         filteredTags.setValue(List.of());
     }
 

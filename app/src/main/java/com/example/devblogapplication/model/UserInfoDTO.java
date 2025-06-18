@@ -21,7 +21,8 @@ public class UserInfoDTO {
     private String readme;
     private LocalDateTime registrationAt;
     private Set<Tag> favoriteTags;
-    private int followers;
-    private int following;
+    private Integer followers;
+    private Integer following;
     private int posts;
+    private Boolean isFollowing;
 }

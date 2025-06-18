@@ -2,7 +2,9 @@ package com.example.devblogapplication.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -24,16 +26,20 @@ import com.example.devblogapplication.room.TagInRoom;
 import com.example.devblogapplication.view.adapter.RankTagAdapter;
 import com.example.devblogapplication.viewmodel.SelectFavoriteTagViewModel;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class SelectFavoriteTagActivity extends AppCompatActivity {
 
     private SelectFavoriteTagViewModel viewModel;
     private ActivitySelectFavoriteTagBinding binding;
-    private final List<Tag> selectedTag = new ArrayList<>();
+//    public final List<Tag> selectedTag = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,18 +59,41 @@ public class SelectFavoriteTagActivity extends AppCompatActivity {
 
         observeViewModel();
         viewModel.getAllTags();
-        if (selectedTag.size() < 5) {
-            binding.btnSave.setEnabled(false);
-        } else {
-            binding.btnSave.setEnabled(true);
-        }
-        binding.btnSave.setOnClickListener(v -> viewModel.updateFavoriteTags(selectedTag));
+
+
+
+        viewModel.selectedTags.observe(this, tags -> {
+            if (tags.size() < 5) {
+                binding.btnSave.setText("Save (" + tags.size() + "/5)");
+                binding.btnSave.setEnabled(false);
+            } else {
+                binding.btnSave.setText("Save (5/5)");
+                binding.btnSave.setEnabled(true);
+            }
+            binding.tagContainer.removeAllViews();
+            for (Tag tag : tags) {
+                TextView tv = createTagTextView(tag);
+                binding.tagContainer.addView(tv);
+            }
+
+        });
+
+
+        binding.btnSave.setOnClickListener(v -> viewModel.updateFavoriteTags());
     }
 
     private void observeViewModel() {
         viewModel.tagsResult.observe(this, result -> {
             if (result.status == Resource.Status.SUCCESS) {
                 displayTags(result.data);
+                viewModel.tagsResult.removeObservers(this);
+                String tagsJson = getIntent().getStringExtra("SELECTED_TAGS_JSON");
+                if (tagsJson != null) {
+                    Gson gson = new Gson();
+                    Type listType = new TypeToken<Set<Tag>>(){}.getType();
+                    Set<Tag> selectedTags = gson.fromJson(tagsJson, listType);
+                    viewModel.selectedTags.setValue(selectedTags);
+                }
             }
         });
 
@@ -84,16 +113,13 @@ public class SelectFavoriteTagActivity extends AppCompatActivity {
         if (tags == null) return;
         Collections.shuffle(tags);
 
-        List<Tag> displayTag = tags.size() > 20 ? tags.subList(0, 20) : tags;
-
-        for (Tag tag : displayTag) {
-            boolean isSelected = selectedTag.contains(tag);
-            TextView tagView = createTagTextView(tag, isSelected);
+        for (Tag tag : tags) {
+            TextView tagView = createTagTextView(tag);
             binding.flexbox.addView(tagView);
         }
     }
 
-    private TextView createTagTextView(Tag tag, boolean isSelected) {
+    private TextView createTagTextView(Tag tag) {
         TagItemBinding tagItemBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(this),
                 R.layout.tag_item,
@@ -101,27 +127,33 @@ public class SelectFavoriteTagActivity extends AppCompatActivity {
                 false
         );
         tagItemBinding.setTag(tag);
-        updateTagSelectionState(tagItemBinding.tagName, isSelected);
-        tagItemBinding.setListener(new RankTagAdapter.OnTagActionListener() {
-            @Override
-            public void onTagClick(int id) {
-                boolean currentlySelected = tagItemBinding.tagName.isSelected();
-                if (currentlySelected) {
-                    selectedTag.remove(tag);
-                } else {
-                    selectedTag.add(tag);
+        boolean isSelected = viewModel.selectedTags.getValue().contains(tag);
+        tagItemBinding.tagName.setSelected(isSelected);
+        tagItemBinding.setListener((view, id) -> {
+            boolean currentlySelected = view.isSelected();
+            Set<Tag> selectedTag = viewModel.selectedTags.getValue();
+            if (currentlySelected) {
+                selectedTag.remove(tag);
+                // Find and update the corresponding tag in flexbox
+                for (int i = 0; i < binding.flexbox.getChildCount(); i++) {
+                    View child = binding.flexbox.getChildAt(i);
+                    if (child instanceof TextView) {
+                        TextView tv = (TextView) child;
+                        if (tv.getText().toString().equals("#" + tag.getName())) {
+                            tv.setSelected(false);
+                            break;
+                        }
+                    }
                 }
-                updateTagSelectionState(tagItemBinding.tagName, !currentlySelected);
+            } else {
+                selectedTag.add(tag);
             }
+            view.setSelected(!currentlySelected);
+            viewModel.selectedTags.setValue(selectedTag);
         });
 
         tagItemBinding.executePendingBindings();
         return tagItemBinding.tagName;
     }
 
-    private void updateTagSelectionState(TextView tagView, boolean isSelected) {
-        tagView.setSelected(isSelected);
-        binding.btnSave.setText("Save (" + selectedTag.size() + "/5)");
-        binding.btnSave.setEnabled(selectedTag.size() >= 5);
-    }
 }

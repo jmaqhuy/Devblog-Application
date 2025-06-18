@@ -47,6 +47,12 @@ public class SetupProfileViewModel extends AndroidViewModel {
         userRepo = new UserRepository(application);
     }
 
+    public LiveData<Resource<UserInfoDTO>> getUser(String uuid) {
+        return userRepo.getUser(uuid);
+    }
+
+
+
     public void updateProfile() {
         if (_loading.getValue()) {
             return;
@@ -111,6 +117,9 @@ public class SetupProfileViewModel extends AndroidViewModel {
 
     public void setUploadingStatus(boolean status) {
         _uploading_image.setValue(status);
+    }
+    public void setImageUploadStatus(Resource<String> status) {
+        _imageUploadStatus.setValue(status);
     }
 
 }

@@ -43,7 +43,7 @@ public class PostDetailViewModel extends AndroidViewModel {
     }
 
     private void getComments(Long postId){
-        _comments.addSource(repo.getComments(postId, null), result ->{
+        _comments.addSource(repo.getComments(postId), result ->{
             if (result.status == Resource.Status.SUCCESS){
                 _comments.setValue(result.data);
             }

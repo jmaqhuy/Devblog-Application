@@ -9,6 +9,7 @@ import com.example.devblogapplication.model.Tag;
 import com.example.devblogapplication.model.TagWithScore;
 import com.example.devblogapplication.model.request.CreateNewPostRequest;
 import com.example.devblogapplication.model.request.ShareExternalPostRequest;
+import com.example.devblogapplication.model.response.SearchResponse;
 import com.example.devblogapplication.model.response.TagDetailResponse;
 import com.example.devblogapplication.room.TagInRoom;
 import com.example.devblogapplication.model.UserInfoDTO;
@@ -53,6 +54,9 @@ public interface ApiService {
     @PUT("/api/users/{id}")
     Call<ApiResponse<UserInfoDTO>> updateProfile(@Body UpdateProfileRequest request, @Path("id") String uid);
 
+    @PUT("/api/users/{id}/follow")
+    Call<ApiResponse<Map<String, Boolean>>> followUser(@Path("id") String uid);
+
     @GET("/api/tags")
     Call<ApiResponse<List<Tag>>> getTags();
 
@@ -74,6 +78,9 @@ public interface ApiService {
     @GET("/api/posts/for-you")
     Call<ApiResponse<List<PostDTO>>> getPostForYou(@Query("pageNumber") int pageNumber);
 
+    @GET("/api/posts/following")
+    Call<ApiResponse<List<PostDTO>>> getPostFollowing(@Query("pageNumber") int pageNumber);
+
     @GET("/api/posts/top")
     Call<ApiResponse<List<PostDTO>>> getTopPost(@Query("pageNumber") int pageNumber);
 
@@ -88,7 +95,7 @@ public interface ApiService {
     Call<ApiResponse<Map<String, Boolean>>> bookmarkPost(@Path("postId") Long postId);
 
     @GET("/api/posts/{postId}/comment")
-    Call<ApiResponse<List<PostCommentDTO>>> getComments(@Path("postId") Long postId, @Query("parentId") @Nullable String parentId);
+    Call<ApiResponse<List<PostCommentDTO>>> getComments(@Path("postId") Long postId);
 
 
     @POST("/api/posts/{postId}/comment")
@@ -105,5 +112,16 @@ public interface ApiService {
     @POST("/api/posts/share")
     Call<ApiResponse<PostDTO>> sharePost(@Body ShareExternalPostRequest request);
 
+    /* Search API */
+    @GET("/api/search")
+    Call<ApiResponse<SearchResponse>> search(@Query("keyword") String keyword,
+                                                   @Query("target") String target);
+
+
+    @GET("/api/search-history")
+    Call<ApiResponse<List<String>>> getSearchHistory();
+
+    @GET("/api/search-recommendations")
+    Call<ApiResponse<List<String>>> getSearchRecommendations(@Query("keyword") String keyword);
 
 }

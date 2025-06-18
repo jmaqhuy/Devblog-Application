@@ -2,6 +2,7 @@
 <layout>
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="vm"
             type="com.example.devblogapplication.viewmodel.TagDetailViewModel" />
@@ -18,7 +19,7 @@
         android:layout_height="match_parent"
         android:id="@+id/main"
         tools:context=".view.activity.TagDetailActivity"
-        android:background="@color/white">
+        android:background="@color/background">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_bg"
-                android:backgroundTint="@color/light_grey"
+                android:backgroundTint="@color/edit_text_color"
                 android:layout_margin="20dp"
                 android:padding="20dp">
 
@@ -49,6 +50,7 @@
                     android:layout_marginStart="10dp"
                     android:text="@{vm.tagDetail.data.tag.name}"
                     android:textSize="24sp"
+                    android:textColor="@color/text_color"
                     android:textStyle="bold"/>
 
                 <TextView
@@ -58,11 +60,13 @@
                     app:layout_constraintTop_toBottomOf="@id/hash_icon"
                     android:paddingHorizontal="10dp"
                     android:layout_marginTop="10dp"
+                    android:textColor="@color/text_color"
                     android:text="@{vm.tagDetail.data.tag.description}"
                     android:textSize="17sp"
                     android:textStyle="normal"/>
 
                 <TextView
+                    android:id="@+id/setFavoriteBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="@id/hash_icon"
@@ -80,6 +84,7 @@
 
             <TextView
                 android:id="@+id/relatedPostTitle"
+                android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
@@ -94,6 +99,16 @@
                 android:nestedScrollingEnabled="false"
                 app:items="@{vm.tagDetail.data.posts}"
                 app:listener="@{listener}" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="There are no posts related to this tag"
+                android:textColor="@color/text_color"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="20dp"
+                android:textSize="17sp"
+                android:visibility="@{vm.tagDetail.data.posts.isEmpty() ? View.VISIBLE : View.GONE}"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

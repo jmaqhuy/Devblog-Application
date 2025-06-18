@@ -7,7 +7,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/background"
         tools:context=".view.fragment.ExploreFragment">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -20,8 +20,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 app:layout_scrollFlags="scroll|enterAlways|snap"
-                android:background="@color/white"
-                android:elevation="10dp">
+                android:elevation="10dp"
+                android:background="@color/background">
 
                 <ImageView
                     android:id="@+id/logo"
@@ -36,18 +36,20 @@
                     android:layout_height="wrap_content"
                     android:text="Explore"
                     android:textSize="24sp"
+                    android:textColor="@color/text_color"
                     app:layout_constraintStart_toEndOf="@id/logo"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginStart="8dp"
                     android:fontFamily="@font/bebas_neue_regular"/>
 
                 <ImageButton
+                    android:id="@+id/searchButton"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:background="@null"
                     android:src="@drawable/ic_search"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
@@ -57,7 +59,7 @@
                     app:layout_constraintTop_toBottomOf="@id/logo"
                     app:tabMode="scrollable"
                     app:tabGravity="start"
-                    android:background="@color/white"
+                    android:background="@color/background"
                     app:tabRippleColor="@null"/>
 
 

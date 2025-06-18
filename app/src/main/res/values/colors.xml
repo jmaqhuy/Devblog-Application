@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="grey">#BEBEBE</color>
+    <color name="dark_grey">#8A8A8A</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_grey">#F8F7FB</color>
     <color name="transparent">#00000000</color>
@@ -12,4 +13,18 @@
     <color name="code_background">#F5F5F5</color>
     <color name="code_text">#D81B60</color>
     <color name="light_yellow">#FFFFDB</color>
+    <color name="dark_red">#842424</color>
+
+    <color name="background">@color/white</color>
+    <color name="text_color">@color/black</color>
+    <color name="text_grey">@color/dark_grey</color>
+    <color name="edit_text_color">@color/light_grey</color>
+    <color name="logo_second_color">#05092C</color>
+    <color name="tag_background_selected">@color/blue</color>
+    <color name="tag_background_unselected">@color/white</color>
+    <color name="like_holder_background">@color/light_grey</color>
+    <color name="bookmark_holder_background">@color/light_yellow</color>
+    <color name="bottom_sheet_background">@color/white</color>
+    <color name="cancel_button_color">@color/light_grey</color>
+    <color name="splash_screen_background">@color/white</color>
 </resources>

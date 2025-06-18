@@ -24,13 +24,18 @@ public class PostListViewModel extends AndroidViewModel {
     public final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     public final MutableLiveData<Boolean> isError = new MutableLiveData<>();
 
+    private final MutableLiveData<String> _errorMessage = new MutableLiveData<>();
+    public LiveData<String> errorMessage = _errorMessage;
+
+    private int page = 0;
+
     public PostListViewModel(@NonNull Application application) {
         super(application);
         postRepo = new PostRepository(application);
     }
 
-    public void loadMyPosts() {
-        LiveData<Resource<List<PostDTO>>> source = postRepo.getMyPosts();
+    public void loadMyPosts(String uuid) {
+        LiveData<Resource<List<PostDTO>>> source = postRepo.getMyPosts(uuid);
         _posts.addSource(source, result -> {
             if (result.status == Resource.Status.SUCCESS) {
                 _posts.setValue(result.data);
@@ -38,12 +43,24 @@ public class PostListViewModel extends AndroidViewModel {
         });
     }
 
-
     public void loadPostForYou() {
-        LiveData<Resource<List<PostDTO>>> source = postRepo.getPostForYou();
+        LiveData<Resource<List<PostDTO>>> source = postRepo.getPostForYou(page);
         _posts.addSource(source, result -> {
+            _errorMessage.setValue(null);
+            isError.setValue(false);
             if (result.status == Resource.Status.SUCCESS) {
                 _posts.setValue(result.data);
+                if (_posts.getValue() == null || _posts.getValue().isEmpty()) {
+                    _errorMessage.setValue("No posts found");
+                    isError.setValue(true);
+                }
+                isLoading.setValue(false);
+            } else if (result.status == Resource.Status.LOADING) {
+                isLoading.setValue(true);
+            } else if (result.status == Resource.Status.ERROR) {
+                _errorMessage.setValue(result.message);
+                isError.setValue(true);
+                isLoading.setValue(false);
             }
         });
     }
@@ -51,8 +68,35 @@ public class PostListViewModel extends AndroidViewModel {
     public void loadTopPosts() {
         LiveData<Resource<List<PostDTO>>> source = postRepo.getTopPost(0);
         _posts.addSource(source, result -> {
+            _errorMessage.setValue(null);
+            isError.setValue(false);
             if (result.status == Resource.Status.SUCCESS) {
                 _posts.setValue(result.data);
+                if (_posts.getValue() == null || _posts.getValue().isEmpty()) {
+                    _errorMessage.setValue(result.message);
+                    isError.setValue(true);
+                }
+            } else if (result.status == Resource.Status.ERROR) {
+                _errorMessage.setValue(result.message);
+                isError.setValue(true);
+            }
+        });
+    }
+
+    public void loadFollowingPosts() {
+        LiveData<Resource<List<PostDTO>>> source = postRepo.getFollowingPosts(0);
+        _posts.addSource(source, result -> {
+            _errorMessage.setValue(null);
+            isError.setValue(false);
+            if (result.status == Resource.Status.SUCCESS) {
+                _posts.setValue(result.data);
+                if (_posts.getValue() == null || _posts.getValue().isEmpty()) {
+                    _errorMessage.setValue("No posts found");
+                    isError.setValue(true);
+                }
+            } else if (result.status == Resource.Status.ERROR) {
+                _errorMessage.setValue(result.message);
+                isError.setValue(true);
             }
         });
     }

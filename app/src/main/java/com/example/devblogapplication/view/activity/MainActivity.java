@@ -1,5 +1,6 @@
 package com.example.devblogapplication.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -97,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
     public void showProfileFragment() {
         binding.viewPager.setCurrentItem(3);
     }
-
+    public void navigateToSearch() {
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+    }
 
 }

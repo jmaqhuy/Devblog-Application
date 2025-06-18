@@ -19,5 +19,5 @@
         android:textSize="16sp"
         android:textColor="@drawable/tab_text_selector"
         android:layout_margin="4dp"
-        android:onClick="@{() -> listener.onTagClick(tag.id)}"/>
+        android:onClick="@{(view) -> listener.onTagClick(view, tag.id)}"/>
 </layout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">@color/black</color>
+    <color name="text_color">@color/white</color>
+    <color name="text_grey">@color/grey</color>
+    <color name="edit_text_color">#2C2C2C</color>
+    <color name="logo_second_color">@color/white</color>
+    <color name="tag_background_selected">@color/blue</color>
+    <color name="tag_background_unselected">@color/black</color>
+    <color name="like_holder_background">@color/dark_blue</color>
+    <color name="bookmark_holder_background">#32FFCE1B</color>
+    <color name="bottom_sheet_background">#121212</color>
+    <color name="cancel_button_color">#2C2C2C</color>
+    <color name="splash_screen_background">@color/dark_blue</color>
+</resources>

@@ -32,6 +32,5 @@ public class WelcomeActivity extends AppCompatActivity {
     public void onButtonClicked(){
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
-        finish();
     }
 }

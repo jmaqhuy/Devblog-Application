@@ -1,6 +1,7 @@
 package com.example.devblogapplication.viewmodel;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -33,4 +34,17 @@ public class TagDetailViewModel extends AndroidViewModel {
     }
 
 
+    public void toggleFavorite() {
+        if (_tagDetail.getValue() != null && _tagDetail.getValue().data != null) {
+            TagDetailResponse original = _tagDetail.getValue().data;
+            // Make a copy of TagDetailResponse and Tag
+            TagDetailResponse copy = new TagDetailResponse(original.getTag(), original.getPosts());
+            boolean isFavorite = copy.getTag().isFavorite();
+            copy.getTag().setFavorite(!isFavorite);
+            // Update repository
+            tagRepository.toggleFavorite(copy.getTag().getId(), !isFavorite);
+            // Update LiveData
+            _tagDetail.setValue(Resource.success(copy));
+        }
+    }
 }

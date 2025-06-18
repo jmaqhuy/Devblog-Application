@@ -49,7 +49,6 @@ public class SplashViewModel extends AndroidViewModel {
     public void checkSession() {
         LiveData<Resource<LoginResponse>> source = repo.introspect();
         _sessionValid.addSource(source, _sessionValid::setValue);
-
     }
 
 

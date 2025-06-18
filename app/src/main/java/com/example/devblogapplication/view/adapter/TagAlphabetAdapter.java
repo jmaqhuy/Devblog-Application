@@ -11,14 +11,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.devblogapplication.databinding.TagAlphabetItemBinding;
 import com.example.devblogapplication.model.Tag;
 
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class TagAlphabetAdapter extends RecyclerView.Adapter<TagAlphabetAdapter.TagAlphabetViewHolder> {
-    private final List<Character> alphabets = List.of('#','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+    private final List<Character> alphabets = List.of('#','A','B','C','D','E','F','G',
+            'H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
     private final List<Tag> tags;
     private final RankTagAdapter.OnTagActionListener listener;
+
+    private Map<Character, List<Tag>> cachedTagsByAlphabet = new HashMap<>();
+    private boolean isCacheValid = false;
 
     public TagAlphabetAdapter(List<Tag> tags, RankTagAdapter.OnTagActionListener listener) {
         this.tags = tags;
@@ -40,21 +45,11 @@ public class TagAlphabetAdapter extends RecyclerView.Adapter<TagAlphabetAdapter.
     public void onBindViewHolder(@NonNull TagAlphabetViewHolder holder, int position) {
         Character character = alphabets.get(position);
         holder.binding.setCharacter(character);
-        Log.d("BindingAdapters", "bindAllTags: tag size" + tags.size());
-        List<Tag> filteredTags;
-        if (character == '#') {
-            filteredTags = tags.stream()
-                    .filter(t -> t.getName() != null && !Character.isLetter(t.getName().charAt(0)))
-                    .sorted(Comparator.comparing(Tag::getName, String.CASE_INSENSITIVE_ORDER))
-                    .collect(Collectors.toList());
-        } else {
-            filteredTags = tags.stream()
-                    .filter(t -> t.getName() != null &&
-                            (t.getName().startsWith(character.toString().toUpperCase()) ||
-                                    t.getName().startsWith(character.toString().toLowerCase())))
-                    .sorted(Comparator.comparing(Tag::getName, String.CASE_INSENSITIVE_ORDER))
-                    .collect(Collectors.toList());
+        if (!isCacheValid) {
+            buildCache();
         }
+
+        List<Tag> filteredTags = cachedTagsByAlphabet.getOrDefault(character, new ArrayList<>());
         holder.binding.setTags(filteredTags);
         holder.binding.setListener(listener);
         holder.binding.executePendingBindings();
@@ -79,6 +74,35 @@ public class TagAlphabetAdapter extends RecyclerView.Adapter<TagAlphabetAdapter.
         if (tags != null) {
             this.tags.addAll(tags);
         }
+        isCacheValid = false;
         notifyDataSetChanged();
+    }
+
+    private void buildCache() {
+        cachedTagsByAlphabet.clear();
+
+        for (Character alphabet : alphabets) {
+            cachedTagsByAlphabet.put(alphabet, new ArrayList<>());
+        }
+        for (Tag tag : tags) {
+            if (tag.getName() != null && !tag.getName().isEmpty()) {
+                char firstChar = tag.getName().charAt(0);
+                Character key;
+
+                if (Character.isLetter(firstChar)) {
+                    key = Character.toUpperCase(firstChar);
+                } else {
+                    key = '#';
+                }
+
+                List<Tag> tagList = cachedTagsByAlphabet.get(key);
+                if (tagList != null) {
+                    tagList.add(tag);
+                }
+            }
+        }
+
+        isCacheValid = true;
+        Log.d("TagAlphabetAdapter", "Cache built with " + tags.size() + " tags");
     }
 }

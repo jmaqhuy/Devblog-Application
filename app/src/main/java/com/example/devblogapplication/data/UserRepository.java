@@ -17,6 +17,7 @@ import com.example.devblogapplication.room.DevblogDatabase;
 import com.example.devblogapplication.room.User;
 import com.example.devblogapplication.room.UserDAO;
 
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -108,6 +109,29 @@ public class UserRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<UserInfoDTO>> call, Throwable throwable) {
+                liveData.postValue(Resource.error("Something went wrong"));
+            }
+        });
+        return liveData;
+    }
+
+    public LiveData<Resource<Map<String, Boolean>>> followUser(String userId) {
+        MutableLiveData<Resource<Map<String, Boolean>>> liveData = new MutableLiveData<>();
+        liveData.postValue(Resource.loading());
+
+        apiService.followUser(userId).enqueue(new Callback<ApiResponse<Map<String, Boolean>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Map<String, Boolean>>> call, Response<ApiResponse<Map<String, Boolean>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    liveData.postValue(Resource.success(response.body().getData()));
+                } else {
+                    ErrorResponse errorResponse = NetworkClient.parseError(response.errorBody());
+                    liveData.postValue(Resource.error(errorResponse.getMessage()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Map<String, Boolean>>> call, Throwable throwable) {
                 liveData.postValue(Resource.error("Something went wrong"));
             }
         });
