@@ -101,9 +101,10 @@ public class AuthRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     live.postValue(Resource.success(response.body().getData()));
                 } else {
-                    live.postValue(Resource.error("Something went wrong"));
+
                     ErrorResponse errorResponse = NetworkClient.parseError(response.errorBody());
                     Log.e("Introspect Error", errorResponse.getMessage());
+                    live.postValue(Resource.error(errorResponse.getMessage()));
                 }
             }
 

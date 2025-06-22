@@ -79,11 +79,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 if (result.status == Resource.Status.LOADING) return;
                 Log.d(TAG, "onCreate: Remember = true");
 
-                if (result.status == Resource.Status.ERROR) {
-                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 long elapsed = System.currentTimeMillis() - startTime;
                 long delay = Math.max(0, MIN_DELAY - elapsed);
 
@@ -113,7 +108,10 @@ public class SplashScreenActivity extends AppCompatActivity {
                             Log.d(TAG, "onCreate: go to main");
                             next = new Intent(this, MainActivity.class);
                         }
-                    } else {
+
+                        startActivity(next);
+                        finish();
+                    } else if (result.status == Resource.Status.ERROR) {
                         vm.deleteAllData();
                         if (SecurePrefsHelper.getAccessToken(this) != null){
                             next = new Intent(this, LoginActivity.class);
@@ -121,10 +119,10 @@ public class SplashScreenActivity extends AppCompatActivity {
                         } else {
                             next = new Intent(this, WelcomeActivity.class);
                         }
-
+                        startActivity(next);
+                        finish();
                     }
-                    startActivity(next);
-                    finish();
+
                 }, delay);
             });
 
